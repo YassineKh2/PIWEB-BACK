@@ -1,7 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const reservation=require("../models/Reservation.js");
-const validate=require("../middlewate/validate.js")
+const validate=require("../middleware/validate.js")
 
 const resController=require('../controllers/ReservationController.js')
 

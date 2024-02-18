@@ -2,7 +2,7 @@ var express = require("express");
 var router = express.Router();
 const sponsor=require("../models/Sponsors.js");
 
-const validates=require("../middlewate/validates.js")
+const validates=require("../middleware/validates.js")
 const spController=require('../controllers/SponsorsController.js')
 
 router.get('/',function(req,res){
