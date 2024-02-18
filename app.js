@@ -1,7 +1,11 @@
 const express = require("express");
 const http = require("http");
 const mongo = require("mongoose");
+
 const tournamentRouter = require("./routes/tournament");
+const ReservationRouter=require("./routes/ReservationR");
+const SpRouter=require("./routes/SponsorsR");
+
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
 mongo
@@ -16,6 +20,8 @@ var app = express();
 
 app.use(bodyParser.json());
 app.use("/tournament", tournamentRouter);
+app.use("/reservation",ReservationRouter);
+app.use("/sponsors",SpRouter);
 
 const server = http.createServer(app);
 server.listen(3000, console.log("server run"));
