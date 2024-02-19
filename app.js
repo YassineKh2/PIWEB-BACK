@@ -3,18 +3,12 @@ const http = require("http");
 const mongo = require("mongoose");
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
-<<<<<<< HEAD
-const cors = require("cors");
-=======
-
+const cors = require("cors")
 
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
 const teamRouter = require("./routes/team");
 
-
-
->>>>>>> ae8c7375c99ec6f7ad0f7f6ba7c0736fdea4214a
 mongo
   .connect(config.url, {
     useNewUrlParser: true,

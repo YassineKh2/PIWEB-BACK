@@ -9,5 +9,6 @@ const Tournament = new Schema({
   image: String,
   tournamentType: String,
   nbTeamPartipate: Number,
+  teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
 });
 module.exports = mongo.model("tournament", Tournament);
