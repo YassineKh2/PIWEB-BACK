@@ -55,9 +55,29 @@ const getTournamentDetails = async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 };
+const updateTournament = async (req, res, next) => {
+  try {
+    const updateTournament = new Tournament({
+      name: req.body.name,
+      description: req.body.description,
+      location: req.body.location,
+      startDate: req.body.startDate,
+      endDate: req.body.endDate,
+      tournamentType: req.body.tournamentType,
+      nbTeamPartipate: req.body.nbTeamPartipate,
+      image: req.body.filename,
+    });
+      let id = req.body._id;
+      const tournament = await Tournament.findByIdAndUpdate(id, req.body);
+      res.status(200).json({tournament});
+  } catch (error) {
+      res.status(500).json({message: error.message});
+  }
+}
 
 module.exports = {
   addTournament,
   getAllTournaments,
   getTournamentDetails,
+  updateTournament
 };

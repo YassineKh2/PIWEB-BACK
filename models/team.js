@@ -10,5 +10,6 @@ const Team = new Schema({
     draws: Number,
     trophies: [],
     ranking: Number,
+    tournaments: [{ type: Schema.Types.ObjectId, ref: 'Tournament' }]
 });
 module.exports = mongo.model("team", Team);
