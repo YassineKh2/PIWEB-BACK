@@ -3,14 +3,15 @@ const http = require("http");
 const mongo = require("mongoose");
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
+
 const cors = require("cors");
+
 
 
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
 const teamRouter = require("./routes/team");
 const userRouter = require("./routes/user");
-
 
 
 mongo
