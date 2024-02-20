@@ -7,7 +7,7 @@ const validate = async(req,res,next)=>{
       
         date:yup.date().required(),
         nbplace:yup.number().required(),
-        prix:yup.number().required(),
+       
          
 
     

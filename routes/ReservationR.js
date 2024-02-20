@@ -11,7 +11,7 @@ router.get('/',function(req,res){
 
 
 router.post('/add' , validate,resController.add)
-router.get('/getall',resController.getall)
+router.get('/getallReservations',resController.getall)
 router.get('/getbyid/:id',resController.getbyid)
 router.get('/getbydate/:date',resController.getbydate)
 router.put('/update/:id', validate ,resController.updateres)
