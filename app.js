@@ -3,18 +3,17 @@ const http = require("http");
 const mongo = require("mongoose");
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
-<<<<<<< HEAD
 const cors = require("cors");
-=======
 
 
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
 const teamRouter = require("./routes/team");
+const userRouter = require("./routes/user");
+const reclamtionRouter = require("./routes/Reclamation");
 
 
 
->>>>>>> ae8c7375c99ec6f7ad0f7f6ba7c0736fdea4214a
 mongo
   .connect(config.url, {
     useNewUrlParser: true,
@@ -31,7 +30,8 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use("/tournament", tournamentRouter);
 app.use("/team", teamRouter);
-
+app.use("/user", userRouter);
+app.use("/reclamation",reclamtionRouter);
 const server = http.createServer(app);
 server.listen(3000, console.log("server run"));
 module.exports = app;
