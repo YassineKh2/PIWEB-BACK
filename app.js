@@ -8,6 +8,7 @@ const cors = require("cors")
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
 const teamRouter = require("./routes/team");
+const matchRouter = require("./routes/match");
 
 mongo
   .connect(config.url, {
@@ -25,6 +26,7 @@ app.use(cors({
 app.use(bodyParser.json());
 app.use("/tournament", tournamentRouter);
 app.use("/team", teamRouter);
+app.use("/match", matchRouter);
 
 const server = http.createServer(app);
 server.listen(3000, console.log("server run"));
