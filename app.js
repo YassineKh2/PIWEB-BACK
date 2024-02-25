@@ -3,12 +3,19 @@ const http = require("http");
 const mongo = require("mongoose");
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
-const cors = require("cors")
+
+const cors = require("cors");
+
+
 
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
 const teamRouter = require("./routes/team");
+
 const matchRouter = require("./routes/match");
+
+const userRouter = require("./routes/user");
+
 
 mongo
   .connect(config.url, {
@@ -27,7 +34,7 @@ app.use(bodyParser.json());
 app.use("/tournament", tournamentRouter);
 app.use("/team", teamRouter);
 app.use("/match", matchRouter);
-
+app.use("/user", userRouter);
 const server = http.createServer(app);
 server.listen(3000, console.log("server run"));
 module.exports = app;
