@@ -27,6 +27,7 @@ const addTournament = async (req, res, next) => {
       country: req.body.country,
       state: req.body.state,
       city: req.body.city,
+      teams: req.body.teams,
     });
     await newTournament.save();
     res.status(201).json({ Tournament: newTournament });
@@ -75,10 +76,25 @@ const updateTournament = async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 };
+const latestTournamentId = async (req, res, next) => {
+  try {
+    const latestTournament = await Tournament.findOne()
+      .sort({ _id: -1 })
+      .limit(1);
+    if (!latestTournament) {
+      return res.status(404).json({ message: "No tournaments found." });
+    }
+    res.json({ latestTournamentId: latestTournament._id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
 
 module.exports = {
   addTournament,
   getAllTournaments,
   getTournamentDetails,
   updateTournament,
+  latestTournamentId,
 };
