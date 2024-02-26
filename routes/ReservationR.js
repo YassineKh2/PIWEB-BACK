@@ -16,4 +16,6 @@ router.get('/getbyid/:id',resController.getbyid)
 router.get('/getbydate/:date',resController.getbydate)
 router.put('/update/:id', validate ,resController.updateres)
 router.delete('/delete/:id',resController.deleteres)
+router.get('/tridesc',resController.tridesc)
+router.get('/triasc',resController.triasc)
 module.exports = router;

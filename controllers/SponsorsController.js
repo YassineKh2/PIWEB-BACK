@@ -20,7 +20,7 @@ async function getall (req,res){
 
 
 }
-async function getbyid(req,res){
+async function getbyidsp(req,res){
     try{
     const data =await Sponsors.findById(req.params.id)
     res.status(200).send(data)
@@ -56,17 +56,35 @@ async function deletesp(req,res){
 
 
 }
-async function getbyname(req,res){
-    try{
-        let name=req.params.name
-    const data =await Reservation.findOne({name})
-    res.status(200).send(data)
-    }  catch(err){
-        res.status(400).json({error:err});
+async function getbyname(req, res) {
+    try {
+        let name = req.params.name;
+        const data = await Sponsors.findOne({ name }); 
+        res.status(200).send(data);
+    } catch (err) {
+        res.status(400).json({ error: err });
     }
-
-
 }
 
 
-module.exports={add,getall,getbyid,updatesp,deletesp,getbyname}
+async function tridesc(req, res) {
+    try {
+        const data = await Sponsors.find().sort({ id: -1 }); // Tri descendant par date
+        res.send(data);
+    } catch (err) {
+        res.status(400).json({ error: err });
+    }
+}
+
+async function triasc(req, res) {
+    try {
+        const data = await Sponsors.find().sort({ id: 1 }); // Tri ascendant par date
+        res.send(data);
+    } catch (err) {
+        res.status(400).json({ error: err });
+    }
+}
+
+
+
+module.exports={add,getall,getbyidsp,updatesp,deletesp,getbyname,triasc,tridesc}

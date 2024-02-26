@@ -6,7 +6,7 @@ const validate = async(req,res,next)=>{
     const schema=yup.object().shape({
       
         date:yup.date().required(),
-        nbplace:yup.number().required(),
+        nbplace:yup.string().required(),
        
          
 

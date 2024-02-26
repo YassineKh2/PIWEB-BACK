@@ -5,7 +5,7 @@ const Schema=mongo.Schema
 const Reservation= new Schema ({
 
     date:Date,
-    nbplace:Number,
+    nbplace:String,
     prix:Number,
 
 })

@@ -11,9 +11,13 @@ router.get('/',function(req,res){
 
 
 router.post('/add' ,validates,spController.add)
-router.get('/getall',spController.getall)
-router.get('/getbyid/:id',spController.getbyid)
-router.get('/getbydate/:date',spController.getbyname)
+router.get('/getallsp',spController.getall)
+
+router.get('/getbyid/:id',spController.getbyidsp)
 router.put('/update/:id',validates,spController.updatesp)
 router.delete('/delete/:id',spController.deletesp)
+router.get('/getbyname/:name', spController.getbyname);
+
+router.get('/tridesc',spController.tridesc)
+router.get('/triasc',spController.triasc)
 module.exports = router;

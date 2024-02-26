@@ -68,5 +68,22 @@ async function getbydate(req,res){
 
 }
 
+async function tridesc(req, res) {
+    try {
+        const data = await Reservation.find().sort({ date: -1 }); // Tri descendant par date
+        res.send(data);
+    } catch (err) {
+        res.status(400).json({ error: err });
+    }
+}
 
-module.exports={add,getall,getbyid,updateres,deleteres,getbydate}
+async function triasc(req, res) {
+    try {
+        const data = await Reservation.find().sort({ date: 1 }); // Tri ascendant par date
+        res.send(data);
+    } catch (err) {
+        res.status(400).json({ error: err });
+    }
+}
+
+module.exports={add,getall,getbyid,updateres,deleteres,getbydate,tridesc,triasc}
