@@ -1,9 +1,13 @@
-const team = require("../models/team");
 const Team = require("../models/team");
 
 const addTeam = async (req, res, next) => {
     try {
         const newTeam = new Team(req.body);
+        newTeam.wins = 0;
+        newTeam.losses = 0;
+        newTeam.draws = 0;
+        newTeam.trophies = [];
+        newTeam.ranking = 1000;
         await newTeam.save();
         res.status(201).json({Team: newTeam});
     } catch (error) {
