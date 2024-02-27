@@ -6,8 +6,6 @@ const bodyParser = require("body-parser");
 
 const cors = require("cors");
 
-
-
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
 const teamRouter = require("./routes/team");
@@ -15,7 +13,6 @@ const teamRouter = require("./routes/team");
 const matchRouter = require("./routes/match");
 
 const userRouter = require("./routes/user");
-
 
 mongo
   .connect(config.url, {
@@ -26,10 +23,12 @@ mongo
   .catch(() => console.log("Not Connected"));
 
 var app = express();
-app.use(cors({
-  origin: '*',  // Replace with your React app's origin
-  credentials: true,  // If your requests include credentials like cookies
-}));
+app.use(
+  cors({
+    origin: "*", // Replace with your React app's origin
+    credentials: true, // If your requests include credentials like cookies
+  })
+);
 app.use(bodyParser.json());
 app.use("/tournament", tournamentRouter);
 app.use("/team", teamRouter);
