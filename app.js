@@ -31,6 +31,9 @@ app.use(cors({
   credentials: true,  // If your requests include credentials like cookies
 }));
 app.use(bodyParser.json());
+app.use('/public/images', express.static(__dirname + '/public/images/'));
+
+
 app.use("/tournament", tournamentRouter);
 app.use("/team", teamRouter);
 app.use("/match", matchRouter);

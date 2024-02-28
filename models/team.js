@@ -7,11 +7,14 @@ const Team = new Schema({
     country: String,
     state: String,
     city: String,
+    image: String,
     wins: Number,
     losses: Number,
     draws: Number,
     trophies: [],
     ranking: Number,
+    creator:{ type: Schema.Types.ObjectId, ref: 'User' },
+    Managers:[{ type: Schema.Types.ObjectId, ref: 'User' }],
     tournaments: [{ type: Schema.Types.ObjectId, ref: 'Tournament' }]
 });
 module.exports = mongo.model("team", Team);
