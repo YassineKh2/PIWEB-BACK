@@ -5,6 +5,8 @@ const Team = new Schema({
     nameAbbreviation: String,
     foundedIn: Date,
     country: String,
+    state: String,
+    city: String,
     wins: Number,
     losses: Number,
     draws: Number,

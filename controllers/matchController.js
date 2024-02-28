@@ -1,6 +1,7 @@
 const match = require("../models/match");
 
 
+
 const addMatch = async (req, res, next) => {
     try {
         const newMatch = new match(req.body);
@@ -11,7 +12,9 @@ const addMatch = async (req, res, next) => {
     }
 };
 
+
+
+
 module.exports = {
     addMatch
   };
-  
