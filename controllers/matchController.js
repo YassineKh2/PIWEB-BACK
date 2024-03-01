@@ -2,6 +2,7 @@ const match = require("../models/match");
 const Tournament = require("../models/tournament");
 const Team = require("../models/team");
 
+
 const addMatch = async (req, res, next) => {
   try {
     const newMatch = new match(req.body);
@@ -13,7 +14,6 @@ const addMatch = async (req, res, next) => {
 };
 const getTournamentMatches = async (req, res, next) => {
   try {
-    console.log("g=hello");
     const idTournament = req.params.idTournament;
 
     const matches = await match.find({ idTournament });
