@@ -9,11 +9,6 @@ const addTeam = async (req, res) => {
             const newTeam = new Team({
                 ...req.body,
                 image: req.body.imagename, // Save the filename in the database
-                wins: 0,
-                losses: 0,
-                draws: 0,
-                trophies: [],
-                ranking: 1000,
             });
 
             await newTeam.save();
@@ -107,6 +102,17 @@ const getTournamentsByTeam = async (req,res) => {
         res.status(500).json({message: error.message});
     }
 }
+const getTeamByUser = async (req,res) => {
+    let id = req.params.id;
+    console.log(id)
+    try{
+        const team = await Team.find({creator: id});
+        console.log(team)
+        res.status(200).json({team});
+    }catch(error){
+        res.status(500).json({message: error.message});
+    }
+}
 
 
 
@@ -117,5 +123,6 @@ module.exports = {
     deleteTeam,
     teamDetail,
     getMatchesByTeam,
-    getTournamentsByTeam
+    getTournamentsByTeam,
+    getTeamByUser
 };

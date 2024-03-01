@@ -6,7 +6,7 @@ const addTournament = async (req, res, next) => {
     console.log(req.body)
     const decodedImage = Buffer.from(req.body.image, "base64");
 
-    const uploadDirectory = path.join(__dirname, '/images/tournaments');
+    const uploadDirectory = path.join(__dirname, '../public/images/tournaments');
     if (!fs.existsSync(uploadDirectory)) {
       fs.mkdirSync(uploadDirectory);
     }
