@@ -6,7 +6,7 @@ const addTournament = async (req, res, next) => {
     const decodedImage = Buffer.from(req.body.image, "base64");
 
     const uploadDirectory =
-      "C:\\Users\\nassi\\OneDrive\\Bureau\\PI 4TWIN\\PI Front\\public\\images\\";
+      "D:\\PIWEB\\Front\\PIWEB-FRONT\\public\\images\\";
 
     if (!fs.existsSync(uploadDirectory)) {
       fs.mkdirSync(uploadDirectory);

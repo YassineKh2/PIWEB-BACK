@@ -15,6 +15,7 @@ const teamRouter = require("./routes/team");
 const matchRouter = require("./routes/match");
 
 const userRouter = require("./routes/user");
+const hotelRouter = require("./routes/hotel");
 
 
 mongo
@@ -35,6 +36,8 @@ app.use("/tournament", tournamentRouter);
 app.use("/team", teamRouter);
 app.use("/match", matchRouter);
 app.use("/user", userRouter);
+app.use("/hotel", hotelRouter);
+
 const server = http.createServer(app);
 server.listen(3000, console.log("server run"));
 module.exports = app;
