@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {signup, getAllUsers, updateUser,deleteUser, signin, addAdmin,blockUser,unBlockUser,getUserProfile} = require("../controllers/userController");
+const {signup, getAllUsers, updateUser,deleteUser, signin, addAdmin,blockUser,unBlockUser,getUserProfile,getuser} = require("../controllers/userController");
 const {userValidator} = require("../middlewares/validators");
 
 
@@ -13,4 +13,6 @@ router.post("/addAdmin",addAdmin);
 router.patch("/block/:id", blockUser);
 router.patch("/unblock/:id", unBlockUser);
 router.get('/profile', getUserProfile);
+router.get("/getuser/:id",getuser);
+
 module.exports = router;

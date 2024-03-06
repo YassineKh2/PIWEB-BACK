@@ -8,7 +8,7 @@ const Role = {
     TournamentManager:'TRM'
 };
 const User = new Schema({
-   
+
     firstName: String,
     lastName:String,
     cin:Number,
@@ -21,6 +21,10 @@ const User = new Schema({
     blocked: { type: Boolean, default: false},
     
     
+    followedTeams:[{ type: Schema.Types.ObjectId, ref: 'Team' }],
+
+
+
 });
 
 User.methods.isBlocked = function () {

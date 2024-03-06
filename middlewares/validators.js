@@ -1,12 +1,15 @@
 const yup = require('yup');
 
 const TeamValidator = async (req,res,next) => {
+    console.log(req.body);
     try{
         const schema = yup.object().shape({
             name: yup.string().min(3).required(),
             nameAbbreviation: yup.string().min(3).max(3).required(),
             foundedIn: yup.date().required(),
             country: yup.string().required(),
+            state: yup.string().required(),
+            city: yup.string().required(),
             wins: yup.number(),
             losses: yup.number(),
             draws: yup.number(),
@@ -16,6 +19,7 @@ const TeamValidator = async (req,res,next) => {
         next();
     }
     catch (error){
+
         res.status(400).send({ error: error.message });
     }
 }

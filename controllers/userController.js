@@ -1,4 +1,5 @@
 const User= require("../models/user");
+const Team= require("../models/team");
 const Role=require("../models/user");
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
@@ -148,7 +149,7 @@ const signin = async (req, res, next) => {
                     return res.status(401).json({ success: false, error: 'Votre compte est bloqué' });
                 }
                 // Génération du token JWT
-                const token = jwt.sign({ userId: user._id, email: user.email }, 'your_secret_key', { expiresIn: '1h' });
+                const token = jwt.sign({ userId: user._id, email: user.email,role:user.role }, 'your_secret_key', { expiresIn: '1h' });
 
                 // Retourner l'utilisateur et le token
                 return res.status(200).json({ success: true, user, token });
@@ -198,6 +199,17 @@ const deleteUser = async (req, res, next) => {
             res.status(500).json({message: error.message});
         }
     }
+
+const getuser = async (req, res, next) => {
+    let id = req.params.id;
+    try {
+        const user = await User.findById(id);
+            res.status(200).json({user});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
 
 
     const blockUser = async (req, res) => {
@@ -289,5 +301,6 @@ module.exports = {
     addAdmin,
     blockUser,
     unBlockUser,
-    getUserProfile
+    getUserProfile,
+    getuser
 };
