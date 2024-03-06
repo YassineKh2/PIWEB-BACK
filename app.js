@@ -2,13 +2,25 @@ const express = require("express");
 const http = require("http");
 const mongo = require("mongoose");
 const cors = require("cors")
-const tournamentRouter = require("./routes/tournament");
 const ReservationRouter=require("./routes/ReservationR");
 const SpRouter=require("./routes/SponsorsR");
 const tkRouter=require("./routes/TicketR");
 
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
+
+
+
+
+//-------------------Routes-------------------
+const tournamentRouter = require("./routes/tournament");
+const teamRouter = require("./routes/team");
+
+const matchRouter = require("./routes/match");
+
+const userRouter = require("./routes/user");
+
+
 mongo
   .connect(config.url, {
     useNewUrlParser: true,
@@ -28,6 +40,9 @@ app.use("/reservation",ReservationRouter);
 app.use("/sponsors",SpRouter);
 app.use("/ticket",tkRouter);
 
+app.use("/team", teamRouter);
+app.use("/match", matchRouter);
+app.use("/user", userRouter);
 const server = http.createServer(app);
 server.listen(3000, console.log("server run"));
 module.exports = app;

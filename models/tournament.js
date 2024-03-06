@@ -3,9 +3,15 @@ const Schema = mongo.Schema;
 const Tournament = new Schema({
   name: String,
   description: String,
-  image: String,
   startDate: Date,
   endDate: Date,
-  Localisation: String,
+  location: String,
+  image: String,
+  tournamentType: String,
+  nbTeamPartipate: Number,
+  country: String,
+  state: String,
+  city: String, 
+  teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
 });
 module.exports = mongo.model("tournament", Tournament);
