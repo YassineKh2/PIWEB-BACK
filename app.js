@@ -35,5 +35,26 @@ app.use("/team", teamRouter);
 app.use("/match", matchRouter);
 app.use("/user", userRouter);
 const server = http.createServer(app);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "http://localhost:5173", // Adjust this based on your React app's origin
+    methods: ["GET", "POST", "PUT"],
+  },
+});
+io.on("connection", (socket) => {
+  console.log("User connected");
+
+  // Handle score update event
+  socket.on("updateScore", (updatedMatch) => {
+    // Broadcast the updated match to all connected clients
+    io.emit("updateScore", updatedMatch);
+    
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User disconnected");
+  });
+});
+
 server.listen(3000, console.log("server run"));
 module.exports = app;
