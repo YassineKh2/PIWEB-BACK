@@ -5,6 +5,7 @@ const cors = require("cors")
 const tournamentRouter = require("./routes/tournament");
 const ReservationRouter=require("./routes/ReservationR");
 const SpRouter=require("./routes/SponsorsR");
+const tkRouter=require("./routes/TicketR");
 
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.use("/tournament", tournamentRouter);
 app.use("/reservation",ReservationRouter);
 app.use("/sponsors",SpRouter);
+app.use("/ticket",tkRouter);
 
 const server = http.createServer(app);
 server.listen(3000, console.log("server run"));

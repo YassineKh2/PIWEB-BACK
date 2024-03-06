@@ -11,4 +11,4 @@ const Reservation= new Schema ({
 })
 
 
-module.exports= mongo.model("reservation",Reservation)
+module.exports= mongo.model("Reservation",Reservation)
