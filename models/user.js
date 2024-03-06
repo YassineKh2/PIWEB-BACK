@@ -18,9 +18,16 @@ const User = new Schema({
     createdAt: { type: Date, default: Date.now },
     role: { type: String, enum: Object.values(Role), default: Role.CLIENT },
     image:{type:String , default:"../../../../../../public/images/userImage.png"},
+    blocked: { type: Boolean, default: false},
+    
+    
     followedTeams:[{ type: Schema.Types.ObjectId, ref: 'Team' }],
 
 
 
 });
+
+User.methods.isBlocked = function () {
+    return this.blocked;
+};
 module.exports = mongo.model("user", User);
