@@ -1,10 +1,14 @@
 const express = require("express");
 const http = require("http");
 const mongo = require("mongoose");
+const cors = require("cors")
+const ReservationRouter=require("./routes/ReservationR");
+const SpRouter=require("./routes/SponsorsR");
+const tkRouter=require("./routes/TicketR");
+
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
 
-const cors = require("cors");
 
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
@@ -30,7 +34,14 @@ app.use(
   })
 );
 app.use(bodyParser.json());
+app.use('/public/images', express.static(__dirname + '/public/images/'));
+
+
 app.use("/tournament", tournamentRouter);
+app.use("/reservation",ReservationRouter);
+app.use("/sponsors",SpRouter);
+app.use("/ticket",tkRouter);
+
 app.use("/team", teamRouter);
 app.use("/match", matchRouter);
 app.use("/user", userRouter);
