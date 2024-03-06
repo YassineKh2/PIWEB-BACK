@@ -8,7 +8,8 @@ const {
     teamDetail,
     getMatchesByTeam,
     getTournamentsByTeam,
-    getTeamByUser
+    getTeamByUser,
+    getTeam
 } = require("../controllers/teamController");
 const {TeamValidator} = require("../middlewares/validators");
 const {uploadImg} = require("../utils/ImageUpload");
@@ -21,6 +22,7 @@ router.delete("/delete/:id", deleteTeam);
 router.get("/getTeamDetail/:id", teamDetail);
 router.get("/matches/:id", getMatchesByTeam);
 router.post("/tournament", getTournamentsByTeam);
-router.post("/getTeam/:id", getTeamByUser);
+router.get("/getTeamByUser/:id", getTeamByUser);
+router.get("/getTeam/:id", getTeam);
 
 module.exports = router;

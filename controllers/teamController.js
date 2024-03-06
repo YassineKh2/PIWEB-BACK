@@ -104,15 +104,24 @@ const getTournamentsByTeam = async (req,res) => {
 }
 const getTeamByUser = async (req,res) => {
     let id = req.params.id;
-    console.log(id)
     try{
         const team = await Team.find({creator: id});
-        console.log(team)
         res.status(200).json({team});
     }catch(error){
         res.status(500).json({message: error.message});
     }
 }
+
+const getTeam = async (req,res) => {
+    let id = req.params.id;
+    try{
+        const team = await Team.findById(id);
+        res.status(200).json({team});
+    }catch(error){
+        res.status(500).json({message: error.message});
+    }
+}
+
 
 
 
@@ -124,5 +133,6 @@ module.exports = {
     teamDetail,
     getMatchesByTeam,
     getTournamentsByTeam,
-    getTeamByUser
+    getTeamByUser,
+    getTeam
 };
