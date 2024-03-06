@@ -141,7 +141,13 @@ const signin = async (req, res, next) => {
             // Utilisation de crypto pour hacher le mot de passe de la même manière que lors du sign-up
             const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
+           
+
             if (hashedPassword === user.password) {
+
+                if (user.isBlocked()) {
+                    return res.status(401).json({ success: false, error: 'Votre compte est bloqué' });
+                }
                 // Génération du token JWT
                 const token = jwt.sign({ userId: user._id, email: user.email,role:user.role }, 'your_secret_key', { expiresIn: '1h' });
 
@@ -206,6 +212,86 @@ const getuser = async (req, res, next) => {
 }
 
 
+    const blockUser = async (req, res) => {
+        const userId = req.params.id;
+        try {
+            // Attempt to find the user by their _id
+            const user = await User.findById(userId);
+    
+            if (!user) {
+                // If the user wasn't found (already deleted or never existed), return a status indicating failure
+                return res.status(404).json({ success: false, message: "User not found." });
+            }
+    
+            user.blocked = true;
+            // Save the updated user data
+            await user.save();
+    
+            // If the user was successfully blocked, return a status indicating success
+            return res.status(200).json({ success: true, message: "User blocked successfully." });
+    
+        } catch (error) {
+            console.error("Error blocking user:", error);
+    
+            // If an error occurred during the process, return a status indicating failure along with the error message
+            return res.status(500).json({ success: false, message: "Error blocking user.", error: error.message });
+        }
+    };
+    
+    const unBlockUser = async (req, res) => {
+        const userId = req.params.id;
+        try {
+            // Attempt to find the user by their _id
+            const user = await User.findById(userId);
+    
+            if (!user) {
+                // If the user wasn't found (already deleted or never existed), return a status indicating failure
+                return res.status(404).json({ success: false, message: "User not found." });
+            }
+    
+            user.blocked = false;
+            // Save the updated user data
+            await user.save();
+    
+            // If the user was successfully unblocked, return a status indicating success
+            return res.status(200).json({ success: true, message: "User unblocked successfully." });
+    
+        } catch (error) {
+            console.error("Error unblocking user:", error);
+    
+            // If an error occurred during the process, return a status indicating failure along with the error message
+            return res.status(500).json({ success: false, message: "Error unblocking user.", error: error.message });
+        }
+    };
+
+    const getUserProfile = async (req, res, next) => {
+        try {
+            const token = req.headers.authorization.split(' ')[1]; // Récupérer le token depuis l'en-tête Authorization
+    
+            if (!token) {
+                return res.status(401).json({ success: false, error: 'Token manquant dans l\'en-tête Authorization' });
+            }
+    
+            const decoded = jwt.verify(token, 'your_secret_key'); // Vérifier et décoder le token
+    
+            // Trouver l'utilisateur dans la base de données en utilisant l'ID du token décodé
+            const user = await User.findById(decoded.userId);
+    
+            if (!user) {
+                return res.status(404).json({ success: false, error: 'Utilisateur non trouvé' });
+            }
+    
+            // Retourner les données du profil de l'utilisateur
+            return res.status(200).json({ success: true, user });
+        } catch (error) {
+            console.error(error);
+            if (error.name === 'JsonWebTokenError') {
+                return res.status(401).json({ success: false, error: 'Token invalide' });
+            }
+            return res.status(500).json({ success: false, error: 'Erreur lors de la récupération des données du profil utilisateur' });
+        }
+    };
+
 module.exports = {
     signup,
     signin,
@@ -213,5 +299,8 @@ module.exports = {
     updateUser,
     deleteUser,
     addAdmin,
+    blockUser,
+    unBlockUser,
+    getUserProfile,
     getuser
 };
