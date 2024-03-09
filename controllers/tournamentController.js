@@ -3,13 +3,16 @@ const fs = require("fs");
 const path = require("path");
 const addTournament = async (req, res, next) => {
   try {
-    console.log(req.body)
+    console.log(req.body);
     const decodedImage = Buffer.from(req.body.image, "base64");
 
-   // const uploadDirectory = path.join(__dirname, '../images/tournaments');
-   const uploadDirectory =
-      "C:\\Users\\nassi\\OneDrive\\Bureau\\PI 4TWIN\\PI Front\\public\\images\\";
-    //const uploadDirectory = path.join(__dirname, '../public/images/tournaments');
+    //const uploadDirectory = path.join(__dirname, '../image');
+    /*const uploadDirectory =
+      "C:\\Users\\nassi\\OneDrive\\Bureau\\PI 4TWIN\\PI Front\\public\\images\\";*/
+    const uploadDirectory = path.join(
+      __dirname,
+      "../public/images/tournaments"
+    );
     if (!fs.existsSync(uploadDirectory)) {
       fs.mkdirSync(uploadDirectory);
     }
@@ -18,8 +21,6 @@ const addTournament = async (req, res, next) => {
 
     // Save the decoded image to the file
     fs.writeFileSync(filePath, decodedImage);
-
-
 
     const newTournament = new Tournament({
       name: req.body.name,
