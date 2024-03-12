@@ -34,6 +34,10 @@ app.use(cors({
   origin: '*',  // Replace with your React app's origin
   credentials: true,  // If your requests include credentials like cookies
 }));
+app.use(bodyParser.json({ limit: '50mb' })); // Adjust the limit as per your requirement
+
+// Increase the limit for URL-encoded payloads
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true })); 
 app.use(bodyParser.json());
 app.use('/public/images', express.static(__dirname + '/public/images/'));
 
