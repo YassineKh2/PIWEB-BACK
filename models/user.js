@@ -5,7 +5,15 @@ const Role = {
     ADMIN:'A',
     CLIENT:'C',
     TEAMMANAGER:'TM',
-    TournamentManager:'TRM'
+    TournamentManager:'TRM',
+    PLAYER:'P',
+    STAFF:'S'
+};
+
+const State = {
+    PENDING:'PENDING',
+    ACCEPTED:'ACCEPTED',
+    REFUSED:'REFUSED'
 };
 const User = new Schema({
 
@@ -21,19 +29,22 @@ const User = new Schema({
     role: { type: String, enum: Object.values(Role), default: Role.CLIENT },
     image:{type:String , default:"../../../../../../public/images/userImage.png"},
     blocked: { type: Boolean, default: false},
+    accountState: { type: String, enum: Object.values(State), default: State.PENDING },
 
 
     followedTeams:[{ type: Schema.Types.ObjectId, ref: 'Team' }],
     // -------- Common Attributes --------
 
     // -------- Player Specific Attributes --------
-    Height:Number,
-    Position:String,
-    Goals:Number,
-    Assists:Number,
-    RedCards:Number,
-    YellowCards:Number,
-    State:String,
+    height:Number,
+    position:String,
+    goals:Number,
+    assists:Number,
+    redCards:Number,
+    yellowCards:Number,
+    state:String,
+    preferredFoot:String,
+    socialMediaHandle:String,
     PlayingFor:{ type: Schema.Types.ObjectId, ref: 'Team' },
     // -------- Player Specific Attributes --------
 

@@ -1,8 +1,10 @@
-const User= require("../models/user");
-const Team= require("../models/team");
-const Role=require("../models/user");
+const User = require("../models/user");
+const Team = require("../models/team");
+const Role = require("../models/user");
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const {createTransport} = require("nodemailer");
+const {config} = require("dotenv");
 
 /*const addUser = async (req, res, next) => {
     try {
@@ -15,18 +17,18 @@ const jwt = require('jsonwebtoken');
 };*/
 const addAdmin = async (req, res, next) => {
     try {
-        const { firstName, lastName, email, password ,birthDate} = req.body;
+        const {firstName, lastName, email, password, birthDate} = req.body;
 
         // Validation des données d'entrée
-        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' ||  typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
-            return res.status(400).json({ success: false, error: 'Prénom, nom, email et mot de passe requis' });
+        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' || typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+            return res.status(400).json({success: false, error: 'Prénom, nom, email et mot de passe requis'});
         }
 
         // Vérifier si l'utilisateur existe déjà
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
 
         if (existingUser) {
-            return res.status(400).json({ success: false, error: 'Cet email est déjà utilisé' });
+            return res.status(400).json({success: false, error: 'Cet email est déjà utilisé'});
         }
 
         // Hacher le mot de passe avant de l'enregistrer dans la base de données
@@ -46,27 +48,27 @@ const addAdmin = async (req, res, next) => {
         // Enregistrer l'utilisateur dans la base de données
         await newUser.save();
 
-        return res.status(201).json({ success: true, message: 'Utilisateur inscrit avec succès' });
+        return res.status(201).json({success: true, message: 'Utilisateur inscrit avec succès'});
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, error: "Erreur lors de l'ajout de l'utilisateur" });
+        return res.status(500).json({success: false, error: "Erreur lors de l'ajout de l'utilisateur"});
     }
 };
 
 const signup = async (req, res, next) => {
     try {
-        const { firstName, lastName, email, password ,birthDate} = req.body;
+        const {firstName, lastName, email, password, birthDate} = req.body;
 
         // Validation des données d'entrée
-        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' ||  typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
-            return res.status(400).json({ success: false, error: 'Prénom, nom, email et mot de passe requis' });
+        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' || typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+            return res.status(400).json({success: false, error: 'Prénom, nom, email et mot de passe requis'});
         }
 
         // Vérifier si l'utilisateur existe déjà
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
 
         if (existingUser) {
-            return res.status(400).json({ success: false, error: 'Cet email est déjà utilisé' });
+            return res.status(400).json({success: false, error: 'Cet email est déjà utilisé'});
         }
 
         // Hacher le mot de passe avant de l'enregistrer dans la base de données
@@ -86,10 +88,10 @@ const signup = async (req, res, next) => {
         // Enregistrer l'utilisateur dans la base de données
         await newUser.save();
 
-        return res.status(201).json({ success: true, message: 'Utilisateur inscrit avec succès' });
+        return res.status(201).json({success: true, message: 'Utilisateur inscrit avec succès'});
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, error: "Erreur lors de l'inscription de l'utilisateur" });
+        return res.status(500).json({success: false, error: "Erreur lors de l'inscription de l'utilisateur"});
     }
 };
 
@@ -127,42 +129,45 @@ const signup = async (req, res, next) => {
 
 const signin = async (req, res, next) => {
     try {
-        const { email, password } = req.body;
+        const {email, password} = req.body;
 
         // Validation des données d'entrée
         if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
-            return res.status(400).json({ success: false, error: 'Email et mot de passe requis' });
+            return res.status(400).json({success: false, error: 'Email et mot de passe requis'});
         }
 
         // Rechercher l'utilisateur dans la base de données par email
-        const user = await User.findOne({ email });
+        const user = await User.findOne({email});
 
         if (user) {
             // Utilisation de crypto pour hacher le mot de passe de la même manière que lors du sign-up
             const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
 
-           
 
             if (hashedPassword === user.password) {
 
                 if (user.isBlocked()) {
-                    return res.status(401).json({ success: false, error: 'Votre compte est bloqué' });
+                    return res.status(401).json({success: false, error: 'Votre compte est bloqué'});
                 }
                 // Génération du token JWT
-                const token = jwt.sign({ userId: user._id, email: user.email,role:user.role }, 'your_secret_key', { expiresIn: '1h' });
+                const token = jwt.sign({
+                    userId: user._id,
+                    email: user.email,
+                    role: user.role
+                }, 'your_secret_key', {expiresIn: '1h'});
 
                 // Retourner l'utilisateur et le token
-                return res.status(200).json({ success: true, user, token });
+                return res.status(200).json({success: true, user, token});
             } else {
                 // Mot de passe incorrect
-                return res.status(401).json({ success: false, error: 'Mot de passe incorrect' });
+                return res.status(401).json({success: false, error: 'Mot de passe incorrect'});
             }
         } else {
             // Utilisateur non trouvé
-            return res.status(401).json({ success: false, error: 'Email incorrect' });
+            return res.status(401).json({success: false, error: 'Email incorrect'});
         }
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 }
 
@@ -183,28 +188,28 @@ const updateUser = async (req, res, next) => {
         if (req.body.password) {
             req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
         }
-        const user = await User.findByIdAndUpdate(id, req.body, { new: true });
-        res.status(200).json({ user });
+        const user = await User.findByIdAndUpdate(id, req.body, {new: true});
+        res.status(200).json({user});
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 }
 
 const deleteUser = async (req, res, next) => {
-        let id = req.params.id;
-        try{
-            const user = await User.findByIdAndDelete(id);
-            res.status(200).json({user});
-        } catch (error) {
-            res.status(500).json({message: error.message});
-        }
+    let id = req.params.id;
+    try {
+        const user = await User.findByIdAndDelete(id);
+        res.status(200).json({user});
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
+}
 
 const getuser = async (req, res, next) => {
     let id = req.params.id;
     try {
         const user = await User.findById(id);
-            res.status(200).json({user});
+        res.status(200).json({user});
     } catch (error) {
         res.status(500).json({message: error.message});
     }
@@ -212,85 +217,158 @@ const getuser = async (req, res, next) => {
 }
 
 
-    const blockUser = async (req, res) => {
-        const userId = req.params.id;
-        try {
-            // Attempt to find the user by their _id
-            const user = await User.findById(userId);
-    
-            if (!user) {
-                // If the user wasn't found (already deleted or never existed), return a status indicating failure
-                return res.status(404).json({ success: false, message: "User not found." });
-            }
-    
-            user.blocked = true;
-            // Save the updated user data
-            await user.save();
-    
-            // If the user was successfully blocked, return a status indicating success
-            return res.status(200).json({ success: true, message: "User blocked successfully." });
-    
-        } catch (error) {
-            console.error("Error blocking user:", error);
-    
-            // If an error occurred during the process, return a status indicating failure along with the error message
-            return res.status(500).json({ success: false, message: "Error blocking user.", error: error.message });
-        }
-    };
-    
-    const unBlockUser = async (req, res) => {
-        const userId = req.params.id;
-        try {
-            // Attempt to find the user by their _id
-            const user = await User.findById(userId);
-    
-            if (!user) {
-                // If the user wasn't found (already deleted or never existed), return a status indicating failure
-                return res.status(404).json({ success: false, message: "User not found." });
-            }
-    
-            user.blocked = false;
-            // Save the updated user data
-            await user.save();
-    
-            // If the user was successfully unblocked, return a status indicating success
-            return res.status(200).json({ success: true, message: "User unblocked successfully." });
-    
-        } catch (error) {
-            console.error("Error unblocking user:", error);
-    
-            // If an error occurred during the process, return a status indicating failure along with the error message
-            return res.status(500).json({ success: false, message: "Error unblocking user.", error: error.message });
-        }
-    };
+const blockUser = async (req, res) => {
+    const userId = req.params.id;
+    try {
+        // Attempt to find the user by their _id
+        const user = await User.findById(userId);
 
-    const getUserProfile = async (req, res, next) => {
-        try {
-            const token = req.headers.authorization.split(' ')[1]; // Récupérer le token depuis l'en-tête Authorization
-    
-            if (!token) {
-                return res.status(401).json({ success: false, error: 'Token manquant dans l\'en-tête Authorization' });
-            }
-    
-            const decoded = jwt.verify(token, 'your_secret_key'); // Vérifier et décoder le token
-    
-            // Trouver l'utilisateur dans la base de données en utilisant l'ID du token décodé
-            const user = await User.findById(decoded.userId);
-    
-            if (!user) {
-                return res.status(404).json({ success: false, error: 'Utilisateur non trouvé' });
-            }
-    
-            // Retourner les données du profil de l'utilisateur
-            return res.status(200).json({ success: true, user });
-        } catch (error) {
-            console.error(error);
-            if (error.name === 'JsonWebTokenError') {
-                return res.status(401).json({ success: false, error: 'Token invalide' });
-            }
-            return res.status(500).json({ success: false, error: 'Erreur lors de la récupération des données du profil utilisateur' });
+        if (!user) {
+            // If the user wasn't found (already deleted or never existed), return a status indicating failure
+            return res.status(404).json({success: false, message: "User not found."});
         }
-    };
+
+        user.blocked = true;
+        // Save the updated user data
+        await user.save();
+
+        // If the user was successfully blocked, return a status indicating success
+        return res.status(200).json({success: true, message: "User blocked successfully."});
+
+    } catch (error) {
+        console.error("Error blocking user:", error);
+
+        // If an error occurred during the process, return a status indicating failure along with the error message
+        return res.status(500).json({success: false, message: "Error blocking user.", error: error.message});
+    }
+};
+
+const unBlockUser = async (req, res) => {
+    const userId = req.params.id;
+    try {
+        // Attempt to find the user by their _id
+        const user = await User.findById(userId);
+
+        if (!user) {
+            // If the user wasn't found (already deleted or never existed), return a status indicating failure
+            return res.status(404).json({success: false, message: "User not found."});
+        }
+
+        user.blocked = false;
+        // Save the updated user data
+        await user.save();
+
+        // If the user was successfully unblocked, return a status indicating success
+        return res.status(200).json({success: true, message: "User unblocked successfully."});
+
+    } catch (error) {
+        console.error("Error unblocking user:", error);
+
+        // If an error occurred during the process, return a status indicating failure along with the error message
+        return res.status(500).json({success: false, message: "Error unblocking user.", error: error.message});
+    }
+};
+
+const getUserProfile = async (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1]; // Récupérer le token depuis l'en-tête Authorization
+
+        if (!token) {
+            return res.status(401).json({success: false, error: 'Token manquant dans l\'en-tête Authorization'});
+        }
+
+        const decoded = jwt.verify(token, 'your_secret_key'); // Vérifier et décoder le token
+
+        // Trouver l'utilisateur dans la base de données en utilisant l'ID du token décodé
+        const user = await User.findById(decoded.userId);
+
+        if (!user) {
+            return res.status(404).json({success: false, error: 'Utilisateur non trouvé'});
+        }
+
+        // Retourner les données du profil de l'utilisateur
+        return res.status(200).json({success: true, user});
+    } catch (error) {
+        console.error(error);
+        if (error.name === 'JsonWebTokenError') {
+            return res.status(401).json({success: false, error: 'Token invalide'});
+        }
+        return res.status(500).json({
+            success: false,
+            error: 'Erreur lors de la récupération des données du profil utilisateur'
+        });
+    }
+};
+function generatePassword(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+        password += characters.charAt(Math.floor(Math.random() * characters.length));
+    }
+    return password;
+}
+const addplayers = async (req, res) => {
+    try {
+       const {teamId,players} = req.body;
+
+        const password = generatePassword(12);
+
+
+        // Hacher le mot de passe avant de l'enregistrer dans la base de données
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+
+        // Mail Config
+
+        let transporter = createTransport(config);
+
+        let message = {
+            from: 'ibrahimhz@gmail.com',
+            to: '',
+            subject: 'Welcome to LinkUpTournament!',
+            html: "<b>Hello world?</b>",
+        };
+
+
+        console.log("this is players",req.body)
+
+
+
+        players.map(async (player)=>{
+            const newUser = new User({
+                firstName: player.playername,
+                email: player.email,
+                password: hashedPassword,
+                role: "P", // Assuming you want to assign a default role
+                createdAt: new Date(),
+                PlayingFor: teamId
+            });
+            await newUser.save();
+
+            // message.to=player.email;
+            //
+            // transporter.sendMail(message).then((info) => {
+            //     return res.status(201).json({
+            //         msg: "Email sent",
+            //         info: info.messageId,
+            //         preview: nodemailer.getTestMessageUrl(info)
+            //     });
+            // }).catch((err) => {
+            //     return res.status(500).json({ msg: err });
+            // });
+
+
+        })
+
+
+
+
+        return res.status(201).json({success: true, message: 'Players added successfully'});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({success: false, error: error.message});
+    }
+};
 
 module.exports = {
     signup,
@@ -302,5 +380,6 @@ module.exports = {
     blockUser,
     unBlockUser,
     getUserProfile,
-    getuser
+    getuser,
+    addplayers
 };
