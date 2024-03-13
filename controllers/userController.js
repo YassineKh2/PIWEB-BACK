@@ -13,6 +13,88 @@ const jwt = require('jsonwebtoken');
         res.status(500).json({message: error.message});
     }
 };*/
+
+const addTRM = async (req, res, next) => {
+    try {
+        const { firstName, lastName, email, password ,birthDate,certificate} = req.body;
+
+        // Validation des données d'entrée
+        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' ||  typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+            return res.status(400).json({ success: false, error: 'Prénom, nom, email et mot de passe requis' });
+        }
+
+        // Vérifier si l'utilisateur existe déjà
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(400).json({ success: false, error: 'Cet email est déjà utilisé' });
+        }
+
+        // Hacher le mot de passe avant de l'enregistrer dans la base de données
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+        // Créer un nouvel utilisateur
+        const newUser = new User({
+            firstName,
+            lastName,
+            email,
+            birthDate,
+            password: hashedPassword,
+            role: 'TRM',
+            createdAt: new Date(),
+            certificate
+        });
+
+        // Enregistrer l'utilisateur dans la base de données
+        await newUser.save();
+
+        return res.status(201).json({ success: true, message: 'Utilisateur inscrit avec succès' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: "Erreur lors de l'ajout de l'utilisateur" });
+    }
+};
+
+const addTM = async (req, res, next) => {
+    try {
+        const { firstName, lastName, email, password ,birthDate,certificate} = req.body;
+
+        // Validation des données d'entrée
+        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' ||  typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+            return res.status(400).json({ success: false, error: 'Prénom, nom, email et mot de passe requis' });
+        }
+
+        // Vérifier si l'utilisateur existe déjà
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+            return res.status(400).json({ success: false, error: 'Cet email est déjà utilisé' });
+        }
+
+        // Hacher le mot de passe avant de l'enregistrer dans la base de données
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+
+        // Créer un nouvel utilisateur
+        const newUser = new User({
+            firstName,
+            lastName,
+            email,
+            birthDate,
+            password: hashedPassword,
+            role: 'TM',
+            createdAt: new Date(),
+            certificate
+        });
+
+        // Enregistrer l'utilisateur dans la base de données
+        await newUser.save();
+
+        return res.status(201).json({ success: true, message: 'Utilisateur inscrit avec succès' });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ success: false, error: "Erreur lors de l'ajout de l'utilisateur" });
+    }
+};
 const addAdmin = async (req, res, next) => {
     try {
         const { firstName, lastName, email, password ,birthDate} = req.body;
@@ -39,7 +121,7 @@ const addAdmin = async (req, res, next) => {
             email,
             birthDate,
             password: hashedPassword,
-            role: Role.ADMIN,
+            role: 'A',
             createdAt: new Date(),
         });
 
@@ -79,7 +161,7 @@ const signup = async (req, res, next) => {
             email,
             birthDate,
             password: hashedPassword,
-            role: Role.CLIENT, // Assuming you want to assign a default role
+            role: 'C',//Role.CLIENT, // Assuming you want to assign a default role
             createdAt: new Date(),
         });
 
@@ -93,37 +175,6 @@ const signup = async (req, res, next) => {
     }
 };
 
-/*const signin = async (req, res, next) => {
-    try {
-        const { email, password } = req.body;
-
-        // Validation des données d'entrée
-        if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
-            return res.status(400).json({ success: false, error: 'Email et mot de passe requis' });
-        }
-
-        // Rechercher l'utilisateur dans la base de données par email
-        const user = await User.findOne({ email }); // Utilisation de User au lieu de ClientModel
-
-        if (user) {
-            // Utilisation de crypto pour hacher le mot de passe de la même manière que lors du sign-up
-            const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-
-            if (hashedPassword === user.password) {
-                // Connexion réussie
-                return res.status(200).json({ success: true, message: 'Connexion réussie' });
-            } else {
-                // Mot de passe incorrect
-                return res.status(401).json({ success: false, error: 'Mot de passe incorrect' });
-            }
-        } else {
-            // Utilisateur non trouvé
-            return res.status(401).json({ success: false, error: 'Email incorrect' });
-        }
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-}*/
 
 const signin = async (req, res, next) => {
     try {
@@ -176,7 +227,7 @@ const getAllUsers = async (req, res, next) => {
     }
 
 }
-const updateUser = async (req, res, next) => {
+/*const updateUser = async (req, res, next) => {
     try {
         let id = req.body._id;
         // Hash the password if it exists in the request body
@@ -188,7 +239,30 @@ const updateUser = async (req, res, next) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-}
+}*/
+
+const updateUser = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Mettre à jour le mot de passe si présent
+        if (req.body.password) {
+            req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
+        }
+
+        // Appliquer les mises à jour
+        Object.assign(user, req.body);
+        await user.save();
+
+        res.status(200).json({ user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
 const deleteUser = async (req, res, next) => {
         let id = req.params.id;
@@ -299,8 +373,10 @@ module.exports = {
     updateUser,
     deleteUser,
     addAdmin,
+    addTRM,
     blockUser,
     unBlockUser,
     getUserProfile,
-    getuser
+    getuser,
+    addTM
 };
