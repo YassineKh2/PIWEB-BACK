@@ -3,7 +3,7 @@ const Team = require("../models/team");
 const Role = require("../models/user");
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
-const {createTransport} = require("nodemailer");
+const {createTransport, getTestMessageUrl} = require("nodemailer");
 const {config} = require("dotenv");
 
 /*const addUser = async (req, res, next) => {
@@ -299,6 +299,7 @@ const getUserProfile = async (req, res, next) => {
         });
     }
 };
+
 function generatePassword(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     let password = '';
@@ -307,68 +308,125 @@ function generatePassword(length) {
     }
     return password;
 }
+
 const addplayers = async (req, res) => {
     try {
-       const {teamId,players} = req.body;
-
+        const {teamId, players} = req.body;
         const password = generatePassword(12);
-
-
-        // Hacher le mot de passe avant de l'enregistrer dans la base de données
         const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+        let transporter = createTransport({
+            service: 'outlook',
+            auth: {
+                user: 'linkuptournament@outlook.com',
+                pass: 'linkup123'
+            }
+        });
 
-
-        // Mail Config
-
-        let transporter = createTransport(config);
-
-        let message = {
-            from: 'ibrahimhz@gmail.com',
-            to: '',
-            subject: 'Welcome to LinkUpTournament!',
-            html: "<b>Hello world?</b>",
-        };
-
-
-        console.log("this is players",req.body)
-
-
-
-        players.map(async (player)=>{
+        let results = [];
+        for (let player of players) {
             const newUser = new User({
                 firstName: player.playername,
                 email: player.email,
                 password: hashedPassword,
-                role: "P", // Assuming you want to assign a default role
+                role: "P",
                 createdAt: new Date(),
                 PlayingFor: teamId
             });
-            await newUser.save();
-
-            // message.to=player.email;
-            //
-            // transporter.sendMail(message).then((info) => {
-            //     return res.status(201).json({
-            //         msg: "Email sent",
-            //         info: info.messageId,
-            //         preview: nodemailer.getTestMessageUrl(info)
-            //     });
-            // }).catch((err) => {
-            //     return res.status(500).json({ msg: err });
-            // });
+            let user = await newUser.save();
 
 
-        })
+            const token = jwt.sign({
+                userId: user._id,
+                email: user.email,
+                role: user.role
+            }, 'your_secret_key', {expiresIn: '1h'});
 
 
+            let message = {
+                from: 'linkuptournament@outlook.com',
+                to: player.email,
+                subject: 'Welcome to LinkUpTournament!',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Activation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 20px;
+        }
 
+        p {
+            margin-bottom: 15px;
+        }
 
-        return res.status(201).json({success: true, message: 'Players added successfully'});
+        a {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<p>Hello ${player.playername},</p>
+
+<p>Your account has been successfully created. To activate your account, please click on the following link:</p>
+
+<p><a href="http://localhost:5173/player/completeSingUp?token=${token}">Activate Account</a></p>
+
+<p>If the link does not work, copy and paste the following URL into your browser:</p>
+
+<p>http://localhost:5173/player/completeSingUp?token=${token}</p>
+
+<p>Thank you,<br>
+    LinkUpTournament</p>
+</body>
+</html>
+`,
+            };
+
+            let info = await transporter.sendMail(message);
+            results.push({
+                msg: "Email sent",
+                info: info.messageId,
+                preview: getTestMessageUrl(info)
+            });
+        }
+
+        return res.status(201).json({success: true, message: 'Players added successfully', results});
     } catch (error) {
         console.error(error);
         return res.status(500).json({success: false, error: error.message});
     }
 };
+
+const finishplayerprofile = async (req, res) => {
+    try {
+        let id = req.body._id;
+        // Hash the password if it exists in the request body
+        if (req.body.password) {
+            req.body.imagename, // Save the filename in the database
+
+                req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
+        }
+        req.body.accountState = "ACCEPTED";
+        req.body.image = req.body.imagename;
+
+        const user = await User.findByIdAndUpdate(id, req.body, {new: true});
+        res.status(200).json({user});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+};
+
 
 module.exports = {
     signup,
@@ -381,5 +439,6 @@ module.exports = {
     unBlockUser,
     getUserProfile,
     getuser,
-    addplayers
+    addplayers,
+    finishplayerprofile
 };

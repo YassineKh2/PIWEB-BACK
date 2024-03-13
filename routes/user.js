@@ -11,9 +11,11 @@ const {
     unBlockUser,
     getUserProfile,
     getuser,
-    addplayers
+    addplayers,
+    finishplayerprofile
 } = require("../controllers/userController");
 const {userValidator} = require("../middlewares/validators");
+const {uploadImgPlayer} = require("../utils/ImageUpload");
 
 
 router.get("/getall", getAllUsers);
@@ -27,5 +29,6 @@ router.patch("/unblock/:id", unBlockUser);
 router.get('/profile', getUserProfile);
 router.get("/getuser/:id", getuser);
 router.post("/addplayers", addplayers);
+router.post("/finishplayerprofile", uploadImgPlayer,finishplayerprofile);
 
 module.exports = router;
