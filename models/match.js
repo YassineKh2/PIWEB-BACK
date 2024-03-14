@@ -3,10 +3,11 @@ const Schema = mongo.Schema;
 const Match = new Schema({
   win: String,
   loss: String,
-  scoreTeam1: Number,
-  scoreTeam2: Number,
+  scoreTeam1: String,
+  scoreTeam2: String,
   matchDate: Date,
   fixture: String,
+  nextMatchId: String,
   idTeam1: { type: Schema.Types.ObjectId, ref: "Team" },
   idTeam2: { type: Schema.Types.ObjectId, ref: "Team" },
   idTournament: { type: Schema.Types.ObjectId, ref: "Tournament" },
