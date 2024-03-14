@@ -12,7 +12,8 @@ const {
     getUserProfile,
     getuser,
     addplayers,
-    finishplayerprofile
+    finishplayerprofile,
+    getAllPlayers
 } = require("../controllers/userController");
 const {userValidator} = require("../middlewares/validators");
 const {uploadImgPlayer} = require("../utils/ImageUpload");
@@ -30,5 +31,6 @@ router.get('/profile', getUserProfile);
 router.get("/getuser/:id", getuser);
 router.post("/addplayers", addplayers);
 router.post("/finishplayerprofile", uploadImgPlayer,finishplayerprofile);
+router.get("/getAllPlayers",getAllPlayers);
 
 module.exports = router;

@@ -426,7 +426,15 @@ const finishplayerprofile = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+const getAllPlayers = async (req, res, next) => {
+    try {
+        const users = await User.find({role:'P'});
+        res.status(200).json({users});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
 
+}
 
 module.exports = {
     signup,
@@ -440,5 +448,6 @@ module.exports = {
     getUserProfile,
     getuser,
     addplayers,
-    finishplayerprofile
+    finishplayerprofile,
+    getAllPlayers
 };
