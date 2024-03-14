@@ -13,5 +13,6 @@ const Tournament = new Schema({
   state: String,
   city: String, 
   teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
+  creator:{ type: Schema.Types.ObjectId, ref: 'User' },
 });
 module.exports = mongo.model("tournament", Tournament);

@@ -7,6 +7,7 @@ const Match = new Schema({
   scoreTeam2: String,
   matchDate: Date,
   fixture: String,
+  nextMatchId: String,
   idTeam1: { type: Schema.Types.ObjectId, ref: "Team" },
   idTeam2: { type: Schema.Types.ObjectId, ref: "Team" },
   idTournament: { type: Schema.Types.ObjectId, ref: "Tournament" },
