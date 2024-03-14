@@ -27,4 +27,42 @@ const addHotel = async (req, res) => {
   }
 };
 
-module.exports = { addHotel };
+const getHotelIds = async (req, res, next) => {
+  try {
+    const { idTournament } = req.params;
+    const addedHotels = await Hotel.find({idTournament }, 'hotelId');
+    const addedHotelIds = addedHotels.map((hotel) => hotel.hotelId);
+    res.json(addedHotelIds);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const getHotelsByIdTournament = async (req, res, next) => {
+  try {
+    const { idTournament } = req.params;
+    console.log('idTournament:', idTournament);
+
+    const hotels = await Hotel.find({ idTournament }).exec();
+    console.log('hotels:', hotels);
+
+    res.status(200).json({ hotels });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+const deleteHotel = async (req, res, next) => {
+  let id = req.params.id;
+  try{
+      const hotel = await Hotel.findByIdAndDelete(id);
+      res.status(200).json({hotel});
+  } catch (error) {
+      res.status(500).json({message: error.message});
+  }
+};
+
+
+module.exports = { addHotel,getHotelIds,getHotelsByIdTournament,deleteHotel};

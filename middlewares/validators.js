@@ -7,6 +7,8 @@ const TeamValidator = async (req,res,next) => {
             nameAbbreviation: yup.string().min(3).max(3).required(),
             foundedIn: yup.date().required(),
             country: yup.string().required(),
+            state: yup.string().required(),
+            city: yup.string().required(),
             wins: yup.number(),
             losses: yup.number(),
             draws: yup.number(),

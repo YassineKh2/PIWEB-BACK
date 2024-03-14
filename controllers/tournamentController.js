@@ -6,13 +6,13 @@ const addTournament = async (req, res, next) => {
     const decodedImage = Buffer.from(req.body.image, "base64");
 
     const uploadDirectory =
-      "D:\\PIWEB\\Front\\PIWEB-FRONT\\public\\images\\";
-
+    "D:\\PIWEB\\Front\\PIWEB-FRONT\\public\\images\\";
     if (!fs.existsSync(uploadDirectory)) {
       fs.mkdirSync(uploadDirectory);
     }
 
     const filePath = path.join(uploadDirectory, req.body.filename);
+
 
     // Save the decoded image to the file
     fs.writeFileSync(filePath, decodedImage);
