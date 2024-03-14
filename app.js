@@ -5,7 +5,7 @@ const cors = require("cors");
 const ReservationRouter = require("./routes/ReservationR");
 const SpRouter = require("./routes/SponsorsR");
 const tkRouter = require("./routes/TicketR");
-
+const paymentRoutes = require('./routes/payment');
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
 
@@ -40,6 +40,7 @@ app.use("/tournament", tournamentRouter);
 app.use("/reservation", ReservationRouter);
 app.use("/sponsors", SpRouter);
 app.use("/ticket", tkRouter);
+app.use('/payment', paymentRoutes);
 
 app.use("/team", teamRouter);
 app.use("/match", matchRouter);
