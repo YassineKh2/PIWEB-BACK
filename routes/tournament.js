@@ -7,6 +7,7 @@ const {
   getTournamentDetails,
   updateTournament,
   latestTournamentId,
+  getUserTournament,
 } = require("../controllers/tournamentController");
 
 router.post("/add", addTournament);
@@ -14,5 +15,6 @@ router.get("/getTournaments", getAllTournaments);
 router.get("/getTournamentDetail/:id",getTournamentDetails);
 router.put("/updatetournament",updateTournament);
 router.get("/latestTournamentId", latestTournamentId);
+router.get("/gettournamentbyuser/:idUser", getUserTournament);
 
 module.exports = router;

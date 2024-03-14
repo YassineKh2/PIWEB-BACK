@@ -51,8 +51,21 @@ const updateMatch = async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 };
+const deleteMatchesByTournamentId = async (req, res) => {
+  try {
+    let id = req.params.idTournament;
+   
+    const resu= await match.deleteMany({ idTournament: id });
+
+    res.status(200).send("deleted");
+  } catch (err) {
+    res.status(400).json({ error: err });
+  }
+};
+
 module.exports = {
   addMatch,
   getTournamentMatches,
   updateMatch,
+  deleteMatchesByTournamentId,
 };

@@ -1,9 +1,11 @@
 const Tournament = require("../models/tournament");
 const fs = require("fs");
 const path = require("path");
+const tournament = require("../models/tournament");
+const User = require("../models/user");
+const user = require("../models/user");
 const addTournament = async (req, res, next) => {
   try {
-    console.log(req.body);
     const decodedImage = Buffer.from(req.body.image, "base64");
 
     //const uploadDirectory = path.join(__dirname, '../image');
@@ -34,6 +36,7 @@ const addTournament = async (req, res, next) => {
       state: req.body.state,
       city: req.body.city,
       teams: req.body.teams,
+      creator: req.body.creator,
     });
     await newTournament.save();
     res.status(201).json({ Tournament: newTournament });
@@ -44,6 +47,18 @@ const addTournament = async (req, res, next) => {
 const getAllTournaments = async (req, res, next) => {
   try {
     const tournaments = await Tournament.find();
+    for (let i = 0; i < tournaments.length; i++) {
+      const creatorId = tournaments[i].creator;
+      const creator = await User.findById(creatorId);
+      tournaments[i] = {
+        ...tournaments[i]._doc,
+        creatorInfo: {
+          firstName: creator.firstName,
+          lastName: creator.lastName,
+        },
+      };
+    }
+
     if (!tournaments || tournaments.length === 0) {
       throw new Error("tournaments not found!");
     }
@@ -65,16 +80,6 @@ const getTournamentDetails = async (req, res, next) => {
 };
 const updateTournament = async (req, res, next) => {
   try {
-    const updateTournament = new Tournament({
-      name: req.body.name,
-      description: req.body.description,
-      location: req.body.location,
-      startDate: req.body.startDate,
-      endDate: req.body.endDate,
-      tournamentType: req.body.tournamentType,
-      nbTeamPartipate: req.body.nbTeamPartipate,
-      image: req.body.filename,
-    });
     let id = req.body._id;
     const tournament = await Tournament.findByIdAndUpdate(id, req.body);
     res.status(200).json({ tournament });
@@ -96,6 +101,27 @@ const latestTournamentId = async (req, res, next) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+const getUserTournament = async (req, res, next) => {
+  try {
+    const creator = req.params.idUser;
+
+    const tournaments = await tournament.find({ creator });
+    for (let i = 0; i < tournaments.length; i++) {
+      const creatorId = tournaments[i].creator;
+      const creator = await User.findById(creatorId);
+      tournaments[i] = {
+        ...tournaments[i]._doc,
+        creatorInfo: {
+          firstName: creator.firstName,
+          lastName: creator.lastName,
+        },
+      };
+    }
+    res.status(200).json({ tournaments });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 
 module.exports = {
   addTournament,
@@ -103,4 +129,5 @@ module.exports = {
   getTournamentDetails,
   updateTournament,
   latestTournamentId,
+  getUserTournament,
 };
