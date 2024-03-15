@@ -12,7 +12,7 @@ agent any
         stage('Build application') {
             steps{
                 script {
-                    sh('sudo npm run build-dev')
+                    sh('echo vagrant | sudo npm run build-dev')
                 }
             }
         }
