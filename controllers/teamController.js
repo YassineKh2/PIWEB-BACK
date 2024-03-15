@@ -10,7 +10,6 @@ const addTeam = async (req, res) => {
                 ...req.body,
                 image: req.body.imagename, // Save the filename in the database
             });
-
             await newTeam.save();
             res.status(201).json({ Team: newTeam });
 
