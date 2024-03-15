@@ -9,13 +9,13 @@ agent any
             }
         }
 
-        stage('Build application') {
-            steps{
-                script {
-                    sh('echo vagrant | sudo npm run build-dev')
-                }
-            }
-        }
+//         stage('Build application') {
+//             steps{
+//                 script {
+//                     sh('npm run build-dev')
+//                 }
+//             }
+//         }
         stage('SonarQube Analysis') {
             steps{
              script {
