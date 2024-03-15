@@ -8,24 +8,31 @@ agent any
                     }
             }
         }
-
-//         stage('Build application') {
-//             steps{
-//                 script {
-//                     sh('npm run build-dev')
-//                 }
-//             }
-//         }
-        stage('SonarQube Analysis') {
-            steps{
-             script {
-                 def scannerHome = tool 'scanner'
-                  withSonarQubeEnv {
-                    sh "${scannerHome}/bin/sonar-scanner"
+      stage('SonarQube Analysis') {
+                steps{
+                 script {
+                     def scannerHome = tool 'scanner'
+                      withSonarQubeEnv {
+                        sh "${scannerHome}/bin/sonar-scanner"
+                        }
                     }
                 }
             }
+      stage('Building images (node and mongo)') {
+        steps{
+            script {
+                sh('docker-compose build')
+                    }
+            }
+      }
+        stage('Build application') {
+            steps{
+                script {
+                    sh('npm run build-dev')
+                }
+            }
         }
+
 
     }
 }
