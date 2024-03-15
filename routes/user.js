@@ -13,15 +13,18 @@ const {
     getuser,
     addplayers,
     finishplayerprofile,
-    getAllPlayers
+    getAllPlayers,
+     addTRM,
+     addTM
 } = require("../controllers/userController");
+
 const {userValidator} = require("../middlewares/validators");
 const {uploadImgPlayer} = require("../utils/ImageUpload");
 
 
 router.get("/getall", getAllUsers);
 router.post("/signup", userValidator, signup);
-router.put("/update", userValidator, updateUser);
+router.put("/update/:id", userValidator, updateUser);
 router.delete("/delete/:id", deleteUser);
 router.post("/signin", signin);
 router.post("/addAdmin", addAdmin);
@@ -32,5 +35,7 @@ router.get("/getuser/:id", getuser);
 router.post("/addplayers", addplayers);
 router.post("/finishplayerprofile", uploadImgPlayer,finishplayerprofile);
 router.get("/getAllPlayers",getAllPlayers);
-
+router.get("/getuser/:id",getuser);
+router.post("/addTRM",addTRM);
+router.post("/addTM",addTM);
 module.exports = router;

@@ -7,7 +7,9 @@ const Sponsors= new Schema ({
     description:String,
     logo:String,
     contact:Number,
-    adresse:String
+    adresse:String,
+    nameteam:String
+ 
 
 })
 
