@@ -35,7 +35,7 @@ const uploadImg = (req, res, next) => {
     })
 }
 const uploadImgPlayer = (req, res, next) => {
-    upload(req, res, (err) => {
+    uploadPlayerImg(req, res, (err) => {
         if (err) {
             return res.status(400).json({ message: err.message })
         }

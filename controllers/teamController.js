@@ -1,6 +1,8 @@
 const Team = require("../models/team");
 const Match = require("../models/match");
 const Tournament = require("../models/tournament");
+const User = require("../models/user");
+const {getGoalById} = require("./goalController");
 
 
 const addTeam = async (req, res) => {
@@ -63,11 +65,31 @@ const deleteTeam = async (req, res) => {
 
 const getMatchesByTeam = async (req,res) => {
     let id = req.params.id;
-    try{
+    try {
         const matches = await Match.find({$or: [{idTeam1: id}, {idTeam2: id}]});
 
         let matchList = [];
-        for(let i = 0; i < matches.length; i++){
+        for (let i = 0; i < matches.length; i++) {
+
+            let goalsTeam1Promises = [];
+            let goalsTeam2Promises = [];
+
+            if (matches[i].goalsScored.team1.length > 0) {
+                matches[i].goalsScored.team1.forEach((goal) => {
+                    goalsTeam1Promises.push(getGoalById(goal));
+                });
+            }
+
+            if (matches[i].goalsScored.team2.length > 0) {
+                matches[i].goalsScored.team2.forEach((goal) => {
+                    goalsTeam2Promises.push(getGoalById(goal));
+                });
+            }
+
+            let goalsTeam1 = await Promise.all(goalsTeam1Promises);
+            let goalsTeam2 = await Promise.all(goalsTeam2Promises);
+
+
             let match = {
                 _id: matches[i]._id,
                 tournament: await Tournament.findById(matches[i].idTournament),
@@ -79,15 +101,15 @@ const getMatchesByTeam = async (req,res) => {
                 win: matches[i].win,
                 loss: matches[i].loss,
                 fixture: matches[i].fixture,
+                goalsScoredByTeam1: goalsTeam1,
+                goalsScoredByTeam2: goalsTeam2,
             }
 
             matchList.push(match);
         }
-
-
         res.status(200).json({matchList});
-    }catch{
-        res.status(500).json({message: message});
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
 }
 
@@ -101,6 +123,8 @@ const getTournamentsByTeam = async (req,res) => {
         res.status(500).json({message: error.message});
     }
 }
+
+
 const getTeamByUser = async (req,res) => {
     let id = req.params.id;
     try{
@@ -120,6 +144,22 @@ const getTeam = async (req,res) => {
         res.status(500).json({message: error.message});
     }
 }
+const getTeams = async (req,res) => {
+    let ids = req.body;
+    let teams = [];
+    try{
+        for (const id of ids) {
+            const team = await Team.findById(id);
+            teams.push(team);
+        }
+
+        res.status(200).json(teams);
+    }catch(error){
+        console.log(error.message);
+        res.status(500).json({message: error.message});
+    }
+}
+
 
 
 
@@ -133,5 +173,6 @@ module.exports = {
     getMatchesByTeam,
     getTournamentsByTeam,
     getTeamByUser,
-    getTeam
+    getTeam,
+    getTeams
 };

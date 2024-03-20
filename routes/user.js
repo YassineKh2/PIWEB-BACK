@@ -12,14 +12,19 @@ const {
     getUserProfile,
     getuser,
     addplayers,
+    addstaff,
     finishplayerprofile,
     getAllPlayers,
-     addTRM,
-     addTM
+    addTRM,
+    addTM,
+    sendinvitationplayer,
+    updateFollowedTeams,
+    getTopPlayers
 } = require("../controllers/userController");
 
 const {userValidator} = require("../middlewares/validators");
 const {uploadImgPlayer} = require("../utils/ImageUpload");
+
 
 
 router.get("/getall", getAllUsers);
@@ -33,9 +38,13 @@ router.patch("/unblock/:id", unBlockUser);
 router.get('/profile', getUserProfile);
 router.get("/getuser/:id", getuser);
 router.post("/addplayers", addplayers);
-router.post("/finishplayerprofile", uploadImgPlayer,finishplayerprofile);
-router.get("/getAllPlayers",getAllPlayers);
-router.get("/getuser/:id",getuser);
-router.post("/addTRM",addTRM);
-router.post("/addTM",addTM);
+router.post("/addstaff", addstaff);
+router.post("/finishplayerprofile", uploadImgPlayer, finishplayerprofile);
+router.get("/getAllPlayers", getAllPlayers);
+router.get("/getuser/:id", getuser);
+router.post("/addTRM", addTRM);
+router.post("/addTM", addTM);
+router.post("/sendinvitationplayer", sendinvitationplayer);
+router.put("/updateFollowedTeams", updateFollowedTeams);
+router.get("/getTopPlayers/:id", getTopPlayers);
 module.exports = router;
