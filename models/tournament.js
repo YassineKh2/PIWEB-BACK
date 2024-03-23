@@ -11,7 +11,8 @@ const Tournament = new Schema({
   nbTeamPartipate: Number,
   country: String,
   state: String,
-  city: String, 
+  city: String,
+  fee: { type: Number, default: 0},
   teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
   creator:{ type: Schema.Types.ObjectId, ref: 'User' },
 });

@@ -117,9 +117,9 @@ const getTournamentsByTeam = async (req,res) => {
     let TournamentIds = req.body;
     try{
         const Tournaments = await Tournament.find({_id: {$in: TournamentIds}});
-
         res.status(200).json({Tournaments});
-    }catch{
+    }catch(error){
+        console.log(error.message);
         res.status(500).json({message: error.message});
     }
 }
@@ -152,17 +152,12 @@ const getTeams = async (req,res) => {
             const team = await Team.findById(id);
             teams.push(team);
         }
-
         res.status(200).json(teams);
     }catch(error){
         console.log(error.message);
         res.status(500).json({message: error.message});
     }
 }
-
-
-
-
 
 module.exports = {
     addTeam,

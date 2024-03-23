@@ -252,7 +252,7 @@ const getAllUsers = async (req, res, next) => {
 
 const updateUser = async (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.body._id;
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -639,6 +639,7 @@ const updateFollowedTeams = async (req, res) => {
         const { _id, followedTeams } = req.body;
 
         const user = await User.findById(_id);
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -653,6 +654,8 @@ const updateFollowedTeams = async (req, res) => {
     }
 
 }
+
+
 const getTopPlayers = async (req, res) => {
     let teamId = req.params.id;
     try {
@@ -660,6 +663,63 @@ const getTopPlayers = async (req, res) => {
             .sort({ PlayerRating: -1 })
             .limit(4);
         res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+const declineRequest = async (req, res) => {
+    let playerid = req.body.player;
+    teamid = req.body.team;
+    try {
+        const player = await User.findById(playerid)
+        player.teamInvitations = player.teamInvitations.filter((teamInvitation) => teamInvitation.team === teamid);
+        player.save()
+
+        res.status(200).json("Decline Invite !");
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const updatePlayersCurrentTeam = async (req, res) => {
+    let playerid = req.body._id;
+    try {
+        const player = await User.findById(playerid)
+        player.PlayingFor = req.body.PlayingFor;
+        player.jointedTeamDate = null;
+
+        if(req.body.PlayingFor)
+          player.jointedTeamDate = new Date();
+
+        player.previousTeams = req.body.previousTeams;
+        player.teamInvitations = player.teamInvitations.filter((teamInvitation) => teamInvitation.team === player.previousTeam);
+        player.save()
+
+        res.status(200).json("Teams Updated !");
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+const updateImage = async (req, res) => {
+    try {
+        const id = req.body._id;
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Mettre à jour le mot de passe si présent
+        if (req.body.password) {
+            req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
+        }
+
+        req.body.image = req.body.imagename;
+
+        // Appliquer les mises à jour
+        Object.assign(user, req.body);
+        await user.save();
+
+        res.status(200).json({ user });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -685,5 +745,8 @@ module.exports = {
     addTM,
     sendinvitationplayer,
     updateFollowedTeams,
-    getTopPlayers
+    getTopPlayers,
+    declineRequest,
+    updatePlayersCurrentTeam,
+    updateImage
 };

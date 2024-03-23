@@ -42,20 +42,25 @@ const User = new Schema({
         TeamInvitations:{ type: Boolean, default: true},
         EmailUpdates:{ type: Boolean, default: true},
     },
-    previousTeams:[{ type: Schema.Types.ObjectId, ref: 'Team' }],
+
     // -------- Common Attributes --------
+
+    // -------- Shared Player And Staff Attributes --------
+    previousTeams:[{ type: Schema.Types.ObjectId, ref: 'Team' }],
+    PlayingFor:{ type: Schema.Types.ObjectId, ref: 'Team' },
+    redCards:{type:Number,default:0},
+    yellowCards:{type:Number,default:0},
+    position:String,
+    jointedTeamDate:{ type: Date, default: Date.now },
+    // -------- Shared Player And Staff Attributes --------
 
     // -------- Player Specific Attributes --------
     height:Number,
-    position:String,
     goals: {type:Number,default:0},
     assists:{type:Number,default:0},
-    redCards:{type:Number,default:0},
-    yellowCards:{type:Number,default:0},
     state:String,
     preferredFoot:String,
     socialMediaHandle:String,
-    PlayingFor:{ type: Schema.Types.ObjectId, ref: 'Team' },
     TeamJerseyNumber:Number,
     PlayerRating:{type:Number,default:1000},
     // -------- Player Specific Attributes --------
@@ -63,8 +68,8 @@ const User = new Schema({
 
 
     // -------- Staff Specific Attributes --------
-    teamsManaged:{ type: Schema.Types.ObjectId, ref: 'Team' },
-    staffPosition:String,
+
+
     // -------- Staff Specific Attributes --------
 
 
