@@ -11,7 +11,18 @@ const storage = multer.diskStorage({
     }
 })
 
+const storagePlayer = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/images/players/')
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' +file.originalname)
+    }
+})
+
 const upload = multer({ storage: storage }).single('image')
+
+const uploadPlayerImg = multer({ storage: storagePlayer }).single('image')
 
 
 const uploadImg = (req, res, next) => {
@@ -23,8 +34,17 @@ const uploadImg = (req, res, next) => {
         next()
     })
 }
-
+const uploadImgPlayer = (req, res, next) => {
+    upload(req, res, (err) => {
+        if (err) {
+            return res.status(400).json({ message: err.message })
+        }
+        req.body.imagename = req.file.filename
+        next()
+    })
+}
 
 module.exports = {
-    uploadImg
+    uploadImg,
+    uploadImgPlayer
 };

@@ -8,6 +8,7 @@ const Team = new Schema({
     country: String,
     state: String,
     city: String,
+    zipcode: Number,
     image: String,
     description: String,
     slogan: String,
