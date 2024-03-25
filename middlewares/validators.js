@@ -55,8 +55,45 @@ const reclamationValidator = async (req, res, next) => {
 };
 
 
+const avisValidator = async (req, res, next) => {
+    try {
+        const schema = yup.object().shape({
+            tournament: yup.string().required(),
+            rating: yup.number().required().min(1).max(5),
+            comment: yup.string(),
+            // Add other fields as per your requirements
+        });
+
+        await schema.validate(req.body);
+        next();
+    } catch (error) {
+        res.status(400).send({ error: error.message });
+    }
+};
+
+const reservationValidator = async(req,res,next)=>{
+    try{
+    const schema=yup.object().shape({
+      
+    
+        nbplace:yup.string().required(),
+       
+         
+
+    
+    }) ;  
+    await schema.validate(req.body);
+    next()
+ } catch(err){
+    res.status(400).json({error:err})
+
+    
+}};
+
 module.exports = {
     TeamValidator,
     reclamationValidator ,
-    userValidator
+    userValidator,
+    avisValidator,
+    reservationValidator
 };
