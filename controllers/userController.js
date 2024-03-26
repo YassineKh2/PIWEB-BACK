@@ -725,6 +725,17 @@ const updateImage = async (req, res) => {
     }
 };
 
+const getplayersbyteam = async (req, res) => {
+    try {
+        const teamId = req.params.id;
+        const users = await User.find({ PlayingFor: teamId,role: 'P'} );
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 module.exports = {
     signup,
@@ -748,5 +759,6 @@ module.exports = {
     getTopPlayers,
     declineRequest,
     updatePlayersCurrentTeam,
-    updateImage
+    updateImage,
+    getplayersbyteam
 };

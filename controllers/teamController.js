@@ -159,6 +159,20 @@ const getTeams = async (req,res) => {
     }
 }
 
+const updateLineup = async (req,res) => {
+    let idTeam = req.body.teamid;
+
+    try{
+        const team = await Team.findById(idTeam);
+        team.currentLineup = req.body.lineup;
+        team.save()
+        res.status(200).json("Saved Lineup!");
+    }catch(error){
+        console.log(error.message);
+        res.status(500).json({message: error.message});
+    }
+}
+
 module.exports = {
     addTeam,
     getAllTeams,
@@ -169,5 +183,6 @@ module.exports = {
     getTournamentsByTeam,
     getTeamByUser,
     getTeam,
-    getTeams
+    getTeams,
+    updateLineup
 };

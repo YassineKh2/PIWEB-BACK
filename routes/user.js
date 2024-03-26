@@ -22,7 +22,8 @@ const {
     getTopPlayers,
     declineRequest,
     updatePlayersCurrentTeam,
-    updateImage
+    updateImage,
+    getplayersbyteam
 } = require("../controllers/userController");
 
 const {userValidator} = require("../middlewares/validators");
@@ -54,4 +55,5 @@ router.post("/declineRequest", declineRequest);
 router.post("/updatePlayersCurrentTeam", updatePlayersCurrentTeam);
 router.put("/updateplayerimage",uploadImgPlayer ,updateImage);
 router.put("/updatestaffimage",uploadImgStaff ,updateImage);
+router.get("/getplayersbyteam/:id" ,getplayersbyteam);
 module.exports = router;
