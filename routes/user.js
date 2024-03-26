@@ -15,6 +15,7 @@ const {
     addstaff,
     finishplayerprofile,
     getAllPlayers,
+    getAllStaff,
     addTRM,
     addTM,
     sendinvitationplayer,
@@ -45,6 +46,7 @@ router.post("/addplayers", addplayers);
 router.post("/addstaff", addstaff);
 router.post("/finishplayerprofile", uploadImgPlayer, finishplayerprofile);
 router.get("/getAllPlayers", getAllPlayers);
+router.get("/getAllStaff", getAllStaff);
 router.get("/getuser/:id", getuser);
 router.post("/addTRM", addTRM);
 router.post("/addTM", addTM);

@@ -599,9 +599,18 @@ const finishplayerprofile = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
-const getAllPlayers = async (req, res, next) => {
+const getAllPlayers = async (req, res) => {
     try {
         const users = await User.find({role:'P'});
+        res.status(200).json({users});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
+const getAllStaff = async (req, res) => {
+    try {
+        const users = await User.find({role:'S'});
         res.status(200).json({users});
     } catch (error) {
         res.status(500).json({message: error.message});
@@ -753,6 +762,7 @@ module.exports = {
     addstaff,
     finishplayerprofile,
     getAllPlayers,
+    getAllStaff,
     addTM,
     sendinvitationplayer,
     updateFollowedTeams,

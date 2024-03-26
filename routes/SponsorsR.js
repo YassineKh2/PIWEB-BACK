@@ -12,7 +12,7 @@ router.get('/',function(req,res){
 
 router.post('/add' ,validates,spController.add)
 router.get('/getallsp',spController.getall)
-
+//router.get ('/getbyteam/:nameteam',spController.getbyname)
 router.get('/getbyid/:id',spController.getbyidsp)
 router.put('/update/:id',validates,spController.updatesp)
 router.delete('/delete/:id',spController.deletesp)

@@ -18,8 +18,9 @@ const Team = new Schema({
     description: { type: String, default: '' },
     slogan: { type: String, default: '' },
     nickname: { type: String, default: '' },
+    capital:{ type: Number, default: 0 },
     wins: { type: Number, default: 0 },
-    losses:{ type: Number, default: 0 },
+    losses: { type: Number, default: 0 },
     draws: { type: Number, default: 0 },
     trophies: { type: [], default: [] },
     ranking: { type: Number, default: 1000 },
@@ -31,6 +32,15 @@ const Team = new Schema({
         date:{ type: Date, default: Date.now },
         state:{ type: String, enum: Object.values(State), default: State.PENDING }
     }],
+    sponsors: [{
+        name:String,
+        description:String,
+        logo:String,
+        contact:Number,
+        adresse:String,
+     
+    }],
     currentLineup:[],
 });
+
 module.exports = mongo.model("team", Team);
