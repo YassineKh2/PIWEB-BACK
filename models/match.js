@@ -15,5 +15,12 @@ const Match = new Schema({
   idTeam1: { type: Schema.Types.ObjectId, ref: "Team" },
   idTeam2: { type: Schema.Types.ObjectId, ref: "Team" },
   idTournament: { type: Schema.Types.ObjectId, ref: "Tournament" },
+    goalsScored: {
+        type: {
+            team1: [{type: Schema.Types.ObjectId, ref: "Goal"}],
+            team2: [{type: Schema.Types.ObjectId, ref: "Goal"}]
+        }
+        , default: {team1: [], team2: []}
+    },
 });
 module.exports = mongo.model("match", Match);

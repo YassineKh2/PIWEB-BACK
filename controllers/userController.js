@@ -43,6 +43,7 @@ const addTRM = async (req, res, next) => {
             birthDate,
             password: hashedPassword,
             role: 'TRM',
+            accountState:'ACCEPTED',
             createdAt: new Date(),
             certificate
         });
@@ -84,6 +85,7 @@ const addTM = async (req, res, next) => {
             birthDate,
             password: hashedPassword,
             role: 'TM',
+            accountState:'ACCEPTED',
             createdAt: new Date(),
             certificate
         });
@@ -124,6 +126,7 @@ const addAdmin = async (req, res, next) => {
             birthDate,
             password: hashedPassword,
             role: 'A',
+            accountState:'ACCEPTED',
             createdAt: new Date(),
         });
 
@@ -164,6 +167,7 @@ const signup = async (req, res, next) => {
             birthDate,
             password: hashedPassword,
             role: 'C',//Role.CLIENT, // Assuming you want to assign a default role
+            accountState:'ACCEPTED',
             createdAt: new Date(),
         });
 
@@ -248,7 +252,7 @@ const getAllUsers = async (req, res, next) => {
 
 const updateUser = async (req, res) => {
     try {
-        const id = req.params.id;
+        const id = req.body._id;
         const user = await User.findById(id);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -482,6 +486,99 @@ const addplayers = async (req, res) => {
     }
 };
 
+
+const addstaff = async (req, res) => {
+    try {
+        const {teamId, staff} = req.body;
+        const password = generatePassword(12);
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+        let transporter = createTransport({
+            service: 'outlook',
+            auth: {
+                user: 'linkuptournament@outlook.com',
+                pass: 'linkup123'
+            }
+        });
+
+        let results = [];
+        for (let staffMember of staff) {
+            const newUser = new User({
+                firstName: staffMember.staffname,
+                email: staffMember.email,
+                password: hashedPassword,
+                role: "S",
+                createdAt: new Date(),
+                PlayingFor: teamId
+            });
+            let user = await newUser;
+            user.save();
+
+
+            const token = jwt.sign({
+                userId: user._id,
+                email: user.email,
+                role: user.role
+            }, 'your_secret_key', {expiresIn: '1h'});
+
+
+            let message = {
+                from: 'linkuptournament@outlook.com',
+                to: staffMember.email,
+                subject: 'Welcome to LinkUpTournament!',
+                html: `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Activation</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 20px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+<p>Hello ${staffMember.staffname}, And Welcome To LinkUpTournament ! </p>
+
+<p>Your account has been successfully created. To activate your account, please click on the following link:</p>
+
+<p><a href="http://localhost:5173/staff/completeSingUp?token=${token}">Activate Account</a></p>
+
+
+`,
+            };
+
+            let info = await transporter.sendMail(message);
+            results.push({
+                msg: "Email sent",
+                info: info.messageId,
+                preview: getTestMessageUrl(info)
+            });
+        }
+
+        return res.status(201).json({success: true, message: 'Players added successfully', results});
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({success: false, error: error.message});
+    }
+};
 const finishplayerprofile = async (req, res) => {
     try {
         let id = req.body._id;
@@ -491,6 +588,8 @@ const finishplayerprofile = async (req, res) => {
 
                 req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
         }
+
+
         req.body.accountState = "ACCEPTED";
         req.body.image = req.body.imagename;
 
@@ -500,7 +599,7 @@ const finishplayerprofile = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
-const getAllPlayers = async (req, res, next) => {
+const getAllPlayers = async (req, res) => {
     try {
         const users = await User.find({role:'P'});
         res.status(200).json({users});
@@ -509,6 +608,143 @@ const getAllPlayers = async (req, res, next) => {
     }
 
 }
+const getAllStaff = async (req, res) => {
+    try {
+        const users = await User.find({role:'S'});
+        res.status(200).json({users});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
+const sendinvitationplayer = async (req, res) => {
+    try {
+        let players = req.body.invitedPlayers;
+        let idTeam = req.body.idTeam
+
+        players.map(async (player)=>{
+            if(player.preferences.TeamInvitations){
+                invite = {
+                    "team" : idTeam,
+                    "date": new Date(),
+                    "state": "PENDING"
+                }
+                player.teamInvitations.push(invite)
+                await User.findById(player._id).updateOne(player)
+            }
+
+
+        })
+
+        res.status(200).json({players});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
+
+const updateFollowedTeams = async (req, res) => {
+    try {
+        const { _id, followedTeams } = req.body;
+
+        const user = await User.findById(_id);
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.followedTeams = followedTeams;
+
+        await user.save();
+
+        res.status(200).json("Added Teams");
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
+
+
+const getTopPlayers = async (req, res) => {
+    let teamId = req.params.id;
+    try {
+        const players = await User.find({ PlayingFor: teamId })
+            .sort({ PlayerRating: -1 })
+            .limit(4);
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+const declineRequest = async (req, res) => {
+    let playerid = req.body.player;
+    teamid = req.body.team;
+    try {
+        const player = await User.findById(playerid)
+        player.teamInvitations = player.teamInvitations.filter((teamInvitation) => teamInvitation.team === teamid);
+        player.save()
+
+        res.status(200).json("Decline Invite !");
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const updatePlayersCurrentTeam = async (req, res) => {
+    let playerid = req.body._id;
+    try {
+        const player = await User.findById(playerid)
+        player.PlayingFor = req.body.PlayingFor;
+        player.jointedTeamDate = null;
+
+        if(req.body.PlayingFor)
+          player.jointedTeamDate = new Date();
+
+        player.previousTeams = req.body.previousTeams;
+        player.teamInvitations = player.teamInvitations.filter((teamInvitation) => teamInvitation.team === player.previousTeam);
+        player.save()
+
+        res.status(200).json("Teams Updated !");
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+const updateImage = async (req, res) => {
+    try {
+        const id = req.body._id;
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Mettre à jour le mot de passe si présent
+        if (req.body.password) {
+            req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
+        }
+
+        req.body.image = req.body.imagename;
+
+        // Appliquer les mises à jour
+        Object.assign(user, req.body);
+        await user.save();
+
+        res.status(200).json({ user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getplayersbyteam = async (req, res) => {
+    try {
+        const teamId = req.params.id;
+        const users = await User.find({ PlayingFor: teamId,role: 'P'} );
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 
 module.exports = {
     signup,
@@ -523,7 +759,16 @@ module.exports = {
     getUserProfile,
     getuser,
     addplayers,
+    addstaff,
     finishplayerprofile,
     getAllPlayers,
-    addTM
+    getAllStaff,
+    addTM,
+    sendinvitationplayer,
+    updateFollowedTeams,
+    getTopPlayers,
+    declineRequest,
+    updatePlayersCurrentTeam,
+    updateImage,
+    getplayersbyteam
 };
