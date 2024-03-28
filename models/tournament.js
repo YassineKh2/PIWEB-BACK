@@ -11,11 +11,19 @@ const Tournament = new Schema({
   nbTeamPartipate: Number,
   country: String,
   state: String,
-  city: String, 
+  city: String,
+  fee: { type: Number, default: 0},
   teams: [{ type: Schema.Types.ObjectId, ref: "Team" }],
   creator:{ type: Schema.Types.ObjectId, ref: 'User' },
   stadiums: [{ type: Schema.Types.ObjectId, ref: "Stadium" }],
 
   
+  teamsGroupStage: [
+    {
+      teamId: { type: Schema.Types.ObjectId, ref: "Team" },
+      potNumber: Number,
+      groupNumber: Number,
+    },
+  ],
 });
 module.exports = mongo.model("tournament", Tournament);
