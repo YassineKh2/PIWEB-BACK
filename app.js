@@ -8,6 +8,7 @@ const tkRouter = require("./routes/TicketR");
 const paymentRoutes = require('./routes/payment');
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
+const StadiumController = require("./controllers/stadiumController"); // Import your stadium controller
 
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
@@ -17,6 +18,7 @@ const matchRouter = require("./routes/match");
 
 const userRouter = require("./routes/user");
 const hotelRouter = require("./routes/hotel");
+const stadiumRouter = require("./routes/stadium");
 
 const path = require("path");
 
@@ -48,6 +50,7 @@ app.use("/team", teamRouter);
 app.use("/match", matchRouter);
 app.use("/user", userRouter);
 app.use("/hotel", hotelRouter);
+app.use("/stadium", stadiumRouter);
 
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
@@ -68,6 +71,11 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
+
+  StadiumController.updateStatusBasedOnMaintenance()
+  .then(() => console.log("Stadium statuses updated on server start"))
+  .catch((error) => console.error("Error updating stadium statuses:", error));
+
 });
 
 server.listen(3000, console.log("server run"));
