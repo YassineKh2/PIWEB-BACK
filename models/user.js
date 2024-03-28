@@ -42,7 +42,7 @@ const User = new Schema({
         TeamInvitations:{ type: Boolean, default: true},
         EmailUpdates:{ type: Boolean, default: true},
     },
-
+    followedTournaments:[{ type: Schema.Types.ObjectId, ref: 'Tournament' }],
     // -------- Common Attributes --------
 
     // -------- Shared Player And Staff Attributes --------
