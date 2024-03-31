@@ -1,4 +1,4 @@
-const stripe = require("stripe")(process.env.STRIPE_SECRET);
+const stripe = require("stripe")('sk_test_51OuG1RHMTmfPbZ2rfhiNFmzxBvybvbLi4eEGueVyTHQQ0UjOGke3GL6juau1m94fOG5U54lZSUu6XxOu8QsDmx8R003CcDRD7p');
 
 exports.createCheckoutSession = async (req, res) => {
     const { amount } = req.body;
@@ -17,9 +17,8 @@ exports.createCheckoutSession = async (req, res) => {
                 quantity: 1,
             }],
             mode: 'payment',
-success_url: 'http://localhost:5173/payment-success?session_id={CHECKOUT_SESSION_ID}',
-cancel_url: 'http://localhost:3000/payment-cancelled',
-            cancel_url: 'http://localhost:3000/cancel',
+            success_url: 'http://localhost:5173/payment-success?session_id={CHECKOUT_SESSION_ID}',
+            cancel_url: 'http://localhost:3000/payment-cancelled', // Assuming you want the same cancel URL for both
         });
 
         res.json({ sessionId: session.id });
@@ -57,5 +56,25 @@ exports.stripeWebhook = async (req, res) => {
     } catch (err) {
         console.error('Error verifying webhook signature:', err);
         res.status(400).send(`Webhook error: ${err.message}`);
+    }
+};
+exports.getTotalTransactionAmount = async (req, res) => {
+    try {
+        // Récupérer la liste des paiements depuis Stripe
+        const payments = await stripe.charges.list({ limit: 10000 }); // Vous pouvez ajuster le limit selon vos besoins
+
+        // Calculer le total des montants
+        let totalAmount = 0;
+        payments.data.forEach(payment => {
+            totalAmount += payment.amount; // Amount est en cents
+        });
+
+        // Convertir le montant total en devise (par exemple, dollars)
+        const totalAmountInUSD = totalAmount / 100;
+
+        res.json({ totalAmountInUSD });
+    } catch (error) {
+        console.error('Error fetching payments:', error);
+        res.status(500).json({ error: error.message });
     }
 };
