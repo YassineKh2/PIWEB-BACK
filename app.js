@@ -17,7 +17,7 @@ const matchRouter = require("./routes/match");
 
 const userRouter = require("./routes/user");
 const hotelRouter = require("./routes/hotel");
-
+const goalRouter = require("./routes/goal");
 const path = require("path");
 
 mongo
@@ -48,7 +48,7 @@ app.use("/team", teamRouter);
 app.use("/match", matchRouter);
 app.use("/user", userRouter);
 app.use("/hotel", hotelRouter);
-
+app.use("/goal",goalRouter)
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {
