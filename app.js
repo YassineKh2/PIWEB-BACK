@@ -15,7 +15,7 @@ const tournamentRouter = require("./routes/tournament");
 const teamRouter = require("./routes/team");
 
 const matchRouter = require("./routes/match");
-
+const geminiRouter= require("./routes/SyGenieR")
 const userRouter = require("./routes/user");
 const hotelRouter = require("./routes/hotel");
 
@@ -49,7 +49,7 @@ app.use("/team", teamRouter);
 app.use("/match", matchRouter);
 app.use("/user", userRouter);
 app.use("/hotel", hotelRouter);
-
+app.use("/gem",geminiRouter);
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {

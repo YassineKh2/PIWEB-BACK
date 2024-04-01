@@ -27,6 +27,7 @@ const User = new Schema({
     password:String,
     createdAt: { type: Date, default: Date.now },
     role: { type: String, enum: Object.values(Role) },
+    bio:String,
     image:{type:String , default:"public/images/image/userImage.png"},
     blocked: { type: Boolean, default: false},
     accountState: { type: String, enum: Object.values(State), default: State.ACCEPTED },
@@ -38,26 +39,43 @@ const User = new Schema({
     resetCodeExpiry: {type: Date,default: Date.now},
 
     
+    teamInvitations:[{
+        team:{ type: Schema.Types.ObjectId, ref: 'Team' },
+        date:{ type: Date, default: Date.now },
+        state:{ type: String, enum: Object.values(State), default: State.PENDING }
+    }],
+    preferences:{
+        TeamInvitations:{ type: Boolean, default: true},
+        EmailUpdates:{ type: Boolean, default: true},
+    },
+    followedTournaments:[{ type: Schema.Types.ObjectId, ref: 'Tournament' }],
     // -------- Common Attributes --------
+
+    // -------- Shared Player And Staff Attributes --------
+    previousTeams:[{ type: Schema.Types.ObjectId, ref: 'Team' }],
+    PlayingFor:{ type: Schema.Types.ObjectId, ref: 'Team' },
+    redCards:{type:Number,default:0},
+    yellowCards:{type:Number,default:0},
+    position:String,
+    jointedTeamDate:{ type: Date, default: Date.now },
+    // -------- Shared Player And Staff Attributes --------
 
     // -------- Player Specific Attributes --------
     height:Number,
-    position:String,
-    goals:Number,
-    assists:Number,
-    redCards:Number,
-    yellowCards:Number,
+    goals: {type:Number,default:0},
+    assists:{type:Number,default:0},
     state:String,
     preferredFoot:String,
     socialMediaHandle:String,
-    PlayingFor:{ type: Schema.Types.ObjectId, ref: 'Team' },
+    TeamJerseyNumber:Number,
+    PlayerRating:{type:Number,default:1000},
     // -------- Player Specific Attributes --------
 
 
 
     // -------- Staff Specific Attributes --------
-    teamsManaged:{ type: Schema.Types.ObjectId, ref: 'Team' },
-    staffPosition:String,
+
+
     // -------- Staff Specific Attributes --------
 
 

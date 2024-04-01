@@ -13,6 +13,7 @@ const {
     getuser,
     getUserWaiting,
     addplayers,
+    addstaff,
     finishplayerprofile,
     getAllPlayers,
      addTRM,
@@ -26,11 +27,20 @@ const {
      updatePassword,
      forgotPassword,
      verifyRecoveryCode,
-     updatePasswordAfterRecovery
+     updatePasswordAfterRecovery,
+     getAllStaff,
+     sendinvitationplayer,
+    updateFollowedTeams,
+    getTopPlayers,
+    declineRequest,
+    updatePlayersCurrentTeam,
+    updateImage,
+    getplayersbyteam,
+    updateFollowedTournaments
 } = require("../controllers/userController");
 
 const {userValidator} = require("../middlewares/validators");
-const {uploadImgPlayer,uploadCert,uploadImgUser} = require("../utils/ImageUpload");
+const {uploadImgPlayer,uploadCert,uploadImgUser,uploadImgStaff} = require("../utils/ImageUpload");
 
 
 router.get("/getall", getAllUsers);
@@ -59,5 +69,15 @@ router.put('/update-password/:userId', updatePassword);
 router.put('/update-password-recovery', updatePasswordAfterRecovery);
 router.post('/forgot-password', forgotPassword);
 router.post('/verify-recovery-code', verifyRecoveryCode);
-
+router.post("/addstaff", addstaff);
+router.get("/getAllStaff", getAllStaff);
+router.post("/sendinvitationplayer", sendinvitationplayer);
+router.put("/updateFollowedTeams", updateFollowedTeams);
+router.get("/getTopPlayers/:id", getTopPlayers);
+router.post("/declineRequest", declineRequest);
+router.post("/updatePlayersCurrentTeam", updatePlayersCurrentTeam);
+router.put("/updateplayerimage",uploadImgPlayer ,updateImage);
+router.put("/updatestaffimage",uploadImgStaff ,updateImage);
+router.get("/getplayersbyteam/:id" ,getplayersbyteam);
+router.put("/updateFollowedTournaments", updateFollowedTournaments);
 module.exports = router;

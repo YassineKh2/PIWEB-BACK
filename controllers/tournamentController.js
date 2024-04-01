@@ -8,22 +8,18 @@ const addTournament = async (req, res, next) => {
   try {
     const decodedImage = Buffer.from(req.body.image, "base64");
 
-    const uploadDirectory =
-    "D:\\PIWEB\\Front\\PIWEB-FRONT\\public\\images\\";
-    //const uploadDirectory = path.join(__dirname, '../image');
-    /*const uploadDirectory =
-      "C:\\Users\\nassi\\OneDrive\\Bureau\\PI 4TWIN\\PI Front\\public\\images\\";*/
-   
+    const uploadDirectory = path.join(
+      __dirname,
+      "../public/images/tournaments"
+    );
     if (!fs.existsSync(uploadDirectory)) {
       fs.mkdirSync(uploadDirectory);
     }
 
     const filePath = path.join(uploadDirectory, req.body.filename);
 
-
     // Save the decoded image to the file
     fs.writeFileSync(filePath, decodedImage);
-
     const newTournament = new Tournament({
       name: req.body.name,
       description: req.body.description,
@@ -36,6 +32,7 @@ const addTournament = async (req, res, next) => {
       state: req.body.state,
       city: req.body.city,
       teams: req.body.teams,
+      teamsGroupStage: req.body.teamsGroupStage,
       creator: req.body.creator,
     });
     await newTournament.save();
