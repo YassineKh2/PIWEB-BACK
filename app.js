@@ -8,6 +8,7 @@ const tkRouter = require("./routes/TicketR");
 const paymentRoutes = require('./routes/payment');
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
+require('dotenv').config();
 
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
