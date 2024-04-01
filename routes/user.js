@@ -11,15 +11,26 @@ const {
     unBlockUser,
     getUserProfile,
     getuser,
+    getUserWaiting,
     addplayers,
     finishplayerprofile,
     getAllPlayers,
      addTRM,
-     addTM
+     addTM,
+     confirmUser,
+     refuseUser,
+     getWaitList,
+     getUserByEmail,
+     googleAuth,
+     updateUserImage,
+     updatePassword,
+     forgotPassword,
+     verifyRecoveryCode,
+     updatePasswordAfterRecovery
 } = require("../controllers/userController");
 
 const {userValidator} = require("../middlewares/validators");
-const {uploadImgPlayer} = require("../utils/ImageUpload");
+const {uploadImgPlayer,uploadCert,uploadImgUser} = require("../utils/ImageUpload");
 
 
 router.get("/getall", getAllUsers);
@@ -34,8 +45,19 @@ router.get('/profile', getUserProfile);
 router.get("/getuser/:id", getuser);
 router.post("/addplayers", addplayers);
 router.post("/finishplayerprofile", uploadImgPlayer,finishplayerprofile);
+router.get("/getWaitList",getWaitList);
 router.get("/getAllPlayers",getAllPlayers);
-router.get("/getuser/:id",getuser);
-router.post("/addTRM",addTRM);
-router.post("/addTM",addTM);
+router.get("/getUserWaiting/:id",getUserWaiting);
+router.post("/addTRM", uploadCert,addTRM);
+router.post("/addTM",uploadCert,addTM);
+router.put("/confirm/:userId", confirmUser);
+router.put("/refuse/:userId",refuseUser);
+router.get('/getuser-by-email/:email', getUserByEmail);
+router.post("/google-auth", googleAuth);
+router.put("/user/profile-image/:userId", uploadImgUser, updateUserImage);
+router.put('/update-password/:userId', updatePassword);
+router.put('/update-password-recovery', updatePasswordAfterRecovery);
+router.post('/forgot-password', forgotPassword);
+router.post('/verify-recovery-code', verifyRecoveryCode);
+
 module.exports = router;
