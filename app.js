@@ -21,7 +21,7 @@ const hotelRouter = require("./routes/hotel");
 const path = require("path");
 
 mongo
-  .connect(config.url, {
+  .connect(config.urlDevops, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
