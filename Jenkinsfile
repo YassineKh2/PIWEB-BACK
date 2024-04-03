@@ -42,11 +42,22 @@ agent any
             steps{
                 script {
                     docker.withRegistry("http://"+registry, registryCredentials ) {
-                        sh('docker push $registry/nodemongoapp:5.0 ')
+                        sh('docker push $registry/nodemongoapp:6.0 ')
                     }
                 }
             }
         }
+        stage('Run application ') {
+            steps{
+                script {
+                    docker.withRegistry("http://"+registry, registryCredentials ) {
+                        sh('docker pull $registry/nodemongoapp:6.0 ')
+                        sh('docker-compose up -d ')
+                    }
+                }
+            }
+        }
+
 
 
 
