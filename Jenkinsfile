@@ -42,7 +42,7 @@ agent any
             steps{
                 script {
                     docker.withRegistry("http://"+registry, registryCredentials ) {
-                        sh('docker push $registry/nodemongoapp:5.0 ')
+                        sh('docker push $registry/nodemongoapp:6.0 ')
                     }
                 }
             }
