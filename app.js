@@ -20,18 +20,13 @@ const hotelRouter = require("./routes/hotel");
 
 const path = require("path");
 
-mongo = async () => {
-    try {
-        await mongoose.connect("mongodb://root:example@db:27017/" , 
-        {useNewUrlParser: true, 
-        useUnifiedTopology: true    });
-    console.log("MongoDB Connected")
-    }
-    catch (error) {
-        console.error(error.message);
-        process.exit(1);
-    } 
-}
+mongo
+  .connect(config.url, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("Database Connected"))
+  .catch(() => console.log("Not Connected"));
 
 var app = express();
 app.use(
@@ -75,5 +70,5 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(3000, console.log("server run"));
+server.listen(5000, console.log("server run"));
 module.exports = app;
