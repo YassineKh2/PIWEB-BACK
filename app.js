@@ -70,5 +70,5 @@ io.on("connection", (socket) => {
   });
 });
 
-//server.listen(3000, console.log("server run"));
+server.listen(5000, console.log("server run"));
 module.exports = app;
