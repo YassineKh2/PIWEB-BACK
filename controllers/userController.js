@@ -18,18 +18,18 @@ const {config} = require("dotenv");
 
 const addTRM = async (req, res, next) => {
     try {
-        const { firstName, lastName, email, password ,birthDate,certificate} = req.body;
+        const {firstName, lastName, email, password, birthDate, certificate} = req.body;
 
         // Validation des données d'entrée
-        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' ||  typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
-            return res.status(400).json({ success: false, error: 'Prénom, nom, email et mot de passe requis' });
+        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' || typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+            return res.status(400).json({success: false, error: 'Prénom, nom, email et mot de passe requis'});
         }
 
         // Vérifier si l'utilisateur existe déjà
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
 
         if (existingUser) {
-            return res.status(400).json({ success: false, error: 'Cet email est déjà utilisé' });
+            return res.status(400).json({success: false, error: 'Cet email est déjà utilisé'});
         }
 
         // Hacher le mot de passe avant de l'enregistrer dans la base de données
@@ -43,7 +43,7 @@ const addTRM = async (req, res, next) => {
             birthDate,
             password: hashedPassword,
             role: 'TRM',
-            accountState:'ACCEPTED',
+            accountState: 'ACCEPTED',
             createdAt: new Date(),
             certificate
         });
@@ -51,27 +51,27 @@ const addTRM = async (req, res, next) => {
         // Enregistrer l'utilisateur dans la base de données
         await newUser.save();
 
-        return res.status(201).json({ success: true, message: 'Utilisateur inscrit avec succès' });
+        return res.status(201).json({success: true, message: 'Utilisateur inscrit avec succès'});
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, error: "Erreur lors de l'ajout de l'utilisateur" });
+        return res.status(500).json({success: false, error: "Erreur lors de l'ajout de l'utilisateur"});
     }
 };
 
 const addTM = async (req, res, next) => {
     try {
-        const { firstName, lastName, email, password ,birthDate,certificate} = req.body;
+        const {firstName, lastName, email, password, birthDate, certificate} = req.body;
 
         // Validation des données d'entrée
-        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' ||  typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
-            return res.status(400).json({ success: false, error: 'Prénom, nom, email et mot de passe requis' });
+        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' || typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+            return res.status(400).json({success: false, error: 'Prénom, nom, email et mot de passe requis'});
         }
 
         // Vérifier si l'utilisateur existe déjà
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
 
         if (existingUser) {
-            return res.status(400).json({ success: false, error: 'Cet email est déjà utilisé' });
+            return res.status(400).json({success: false, error: 'Cet email est déjà utilisé'});
         }
 
         // Hacher le mot de passe avant de l'enregistrer dans la base de données
@@ -85,7 +85,7 @@ const addTM = async (req, res, next) => {
             birthDate,
             password: hashedPassword,
             role: 'TM',
-            accountState:'ACCEPTED',
+            accountState: 'ACCEPTED',
             createdAt: new Date(),
             certificate
         });
@@ -93,10 +93,10 @@ const addTM = async (req, res, next) => {
         // Enregistrer l'utilisateur dans la base de données
         await newUser.save();
 
-        return res.status(201).json({ success: true, message: 'Utilisateur inscrit avec succès' });
+        return res.status(201).json({success: true, message: 'Utilisateur inscrit avec succès'});
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, error: "Erreur lors de l'ajout de l'utilisateur" });
+        return res.status(500).json({success: false, error: "Erreur lors de l'ajout de l'utilisateur"});
     }
 };
 const addAdmin = async (req, res, next) => {
@@ -126,7 +126,7 @@ const addAdmin = async (req, res, next) => {
             birthDate,
             password: hashedPassword,
             role: 'A',
-            accountState:'ACCEPTED',
+            accountState: 'ACCEPTED',
             createdAt: new Date(),
         });
 
@@ -167,7 +167,7 @@ const signup = async (req, res, next) => {
             birthDate,
             password: hashedPassword,
             role: 'C',//Role.CLIENT, // Assuming you want to assign a default role
-            accountState:'ACCEPTED',
+            accountState: 'ACCEPTED',
             createdAt: new Date(),
         });
 
@@ -255,7 +255,7 @@ const updateUser = async (req, res) => {
         const id = req.body._id;
         const user = await User.findById(id);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({message: "User not found"});
         }
 
         // Mettre à jour le mot de passe si présent
@@ -267,9 +267,9 @@ const updateUser = async (req, res) => {
         Object.assign(user, req.body);
         await user.save();
 
-        res.status(200).json({ user });
+        res.status(200).json({user});
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 };
 
@@ -404,7 +404,9 @@ const addplayers = async (req, res) => {
         for (let player of players) {
             const newUser = new User({
                 firstName: player.playername,
+                lastName: player.lastName ? player.lastName : '',
                 email: player.email,
+                position: player.position ? player.position : '',
                 password: hashedPassword,
                 role: "P",
                 createdAt: new Date(),
@@ -504,7 +506,9 @@ const addstaff = async (req, res) => {
         for (let staffMember of staff) {
             const newUser = new User({
                 firstName: staffMember.staffname,
+                lastName: staffMember.lastName ? staffMember.lastName : '',
                 email: staffMember.email,
+                position: staffMember.position ? staffMember.position : '',
                 password: hashedPassword,
                 role: "S",
                 createdAt: new Date(),
@@ -599,9 +603,29 @@ const finishplayerprofile = async (req, res) => {
         res.status(500).json({message: error.message});
     }
 };
+const finishstaffprofile = async (req, res) => {
+    try {
+        let id = req.body._id;
+        // Hash the password if it exists in the request body
+        if (req.body.password) {
+            req.body.imagename, // Save the filename in the database
+
+                req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
+        }
+
+
+        req.body.accountState = "ACCEPTED";
+        req.body.image = req.body.imagename;
+
+        const user = await User.findByIdAndUpdate(id, req.body, {new: true});
+        res.status(200).json({user});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+};
 const getAllPlayers = async (req, res) => {
     try {
-        const users = await User.find({role:'P'});
+        const users = await User.find({role: 'P'});
         res.status(200).json({users});
     } catch (error) {
         res.status(500).json({message: error.message});
@@ -610,33 +634,44 @@ const getAllPlayers = async (req, res) => {
 }
 const getAllStaff = async (req, res) => {
     try {
-        const users = await User.find({role:'S'});
+        const users = await User.find({role: 'S'});
         res.status(200).json({users});
     } catch (error) {
         res.status(500).json({message: error.message});
     }
 
 }
-const sendinvitationplayer = async (req, res) => {
+const sendinvitationmember = async (req, res) => {
     try {
         let players = req.body.invitedPlayers;
         let idTeam = req.body.idTeam
+        let staff = req.body.invitedStaff;
+        let invitation = {
+            "team": idTeam,
+            "date": new Date(),
+            "state": "PENDING"
+        }
+        if (players) {
+            players.map(async (player) => {
 
-        players.map(async (player)=>{
-            if(player.preferences.TeamInvitations){
-                invite = {
-                    "team" : idTeam,
-                    "date": new Date(),
-                    "state": "PENDING"
+                if (player.preferences.TeamInvitations) {
+                    player.teamInvitations.push(invitation)
+                    await User.updateOne({_id: player._id}, {$set: player});
                 }
-                player.teamInvitations.push(invite)
-                await User.findById(player._id).updateOne(player)
-            }
 
 
-        })
+            })
+        }
+        if (staff) {
+            staff.map(async (staff) => {
+                if (staff.preferences.TeamInvitations) {
+                    staff.teamInvitations.push(invitation)
+                    await User.updateOne({_id: staff._id}, {$set: staff});
+                }
+            })
+        }
 
-        res.status(200).json({players});
+        res.status(200).json("Invitations sent");
     } catch (error) {
         res.status(500).json({message: error.message});
     }
@@ -645,12 +680,12 @@ const sendinvitationplayer = async (req, res) => {
 
 const updateFollowedTeams = async (req, res) => {
     try {
-        const { _id, followedTeams } = req.body;
+        const {_id, followedTeams} = req.body;
 
         const user = await User.findById(_id);
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({message: "User not found"});
         }
 
         user.followedTeams = followedTeams;
@@ -668,12 +703,12 @@ const updateFollowedTeams = async (req, res) => {
 const getTopPlayers = async (req, res) => {
     let teamId = req.params.id;
     try {
-        const players = await User.find({ PlayingFor: teamId })
-            .sort({ PlayerRating: -1 })
+        const players = await User.find({PlayingFor: teamId})
+            .sort({PlayerRating: -1})
             .limit(4);
         res.status(200).json(players);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 };
 const declineRequest = async (req, res) => {
@@ -686,7 +721,7 @@ const declineRequest = async (req, res) => {
 
         res.status(200).json("Decline Invite !");
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 };
 
@@ -697,8 +732,8 @@ const updatePlayersCurrentTeam = async (req, res) => {
         player.PlayingFor = req.body.PlayingFor;
         player.jointedTeamDate = null;
 
-        if(req.body.PlayingFor)
-          player.jointedTeamDate = new Date();
+        if (req.body.PlayingFor)
+            player.jointedTeamDate = new Date();
 
         player.previousTeams = req.body.previousTeams;
         player.teamInvitations = player.teamInvitations.filter((teamInvitation) => teamInvitation.team === player.previousTeam);
@@ -706,7 +741,7 @@ const updatePlayersCurrentTeam = async (req, res) => {
 
         res.status(200).json("Teams Updated !");
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 };
 const updateImage = async (req, res) => {
@@ -714,7 +749,7 @@ const updateImage = async (req, res) => {
         const id = req.body._id;
         const user = await User.findById(id);
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({message: "User not found"});
         }
 
         // Mettre à jour le mot de passe si présent
@@ -728,23 +763,105 @@ const updateImage = async (req, res) => {
         Object.assign(user, req.body);
         await user.save();
 
-        res.status(200).json({ user });
+        res.status(200).json({user});
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 };
 
 const getplayersbyteam = async (req, res) => {
     try {
         const teamId = req.params.id;
-        const users = await User.find({ PlayingFor: teamId,role: 'P'} );
+        const users = await User.find({PlayingFor: teamId, role: 'P'});
 
         res.status(200).json(users);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
+    }
+};
+const getstaffbyteam = async (req, res) => {
+    try {
+        const teamId = req.params.id;
+        const users = await User.find({PlayingFor: teamId, role: 'S'});
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+};
+const getTeamMembers = async (req, res) => {
+    try {
+        const teamId = req.params.id;
+        const users = await User.find({PlayingFor: teamId});
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
 };
 
+const updateTeamMember = async (req, res) => {
+    try {
+        const id = req.body._id;
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+        await User.updateOne({_id: id}, {$set: req.body});
+
+        res.status(200).json({message: "User updated successfully"});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
+const getInvitationsByTeam = async (req, res) => {
+    try {
+        let teamId = req.params.id;
+        let users = await User.find();
+
+        let userWithInvitation = {
+            user:{},
+            invitation:{}
+        }
+
+        let filteredUsers = []
+
+
+        let hasInvite = {
+            state:false,
+            invitation:{}
+        }
+        users.forEach((user)=>{
+            user.teamInvitations.forEach((invitation)=>{
+                if(invitation.team.toString() === teamId)
+                {
+                    hasInvite.state = true;
+                    hasInvite.invitation = invitation
+                }
+            })
+            if(hasInvite.state){
+                userWithInvitation.user = user
+                userWithInvitation.invitation = hasInvite.invitation
+                filteredUsers.push(userWithInvitation)
+                hasInvite = {
+                    state:false,
+                    invitation:{}
+                }
+                userWithInvitation = {
+                    user:{},
+                    invitation:{}
+                }
+
+
+            }
+
+        })
+        res.status(200).json(filteredUsers);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
 
 module.exports = {
     signup,
@@ -761,14 +878,19 @@ module.exports = {
     addplayers,
     addstaff,
     finishplayerprofile,
+    finishstaffprofile,
     getAllPlayers,
     getAllStaff,
     addTM,
-    sendinvitationplayer,
+    sendinvitationmember,
     updateFollowedTeams,
     getTopPlayers,
     declineRequest,
     updatePlayersCurrentTeam,
     updateImage,
-    getplayersbyteam
+    getplayersbyteam,
+    getstaffbyteam,
+    getTeamMembers,
+    updateTeamMember,
+    getInvitationsByTeam
 };

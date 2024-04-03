@@ -172,6 +172,18 @@ const updateLineup = async (req,res) => {
         res.status(500).json({message: error.message});
     }
 }
+const updateImage = async (req,res) => {
+    let idTeam = req.body._id;
+    try{
+        const team = await Team.findById(idTeam);
+        team.image = req.body.imagename;
+        team.save()
+        res.status(200).json("Image Updated !");
+    }catch(error){
+        console.log(error.message);
+        res.status(500).json({message: error.message});
+    }
+}
 
 module.exports = {
     addTeam,
@@ -184,5 +196,6 @@ module.exports = {
     getTeamByUser,
     getTeam,
     getTeams,
-    updateLineup
+    updateLineup,
+    updateImage
 };

@@ -38,9 +38,10 @@ const Team = new Schema({
         logo:String,
         contact:Number,
         adresse:String,
-     
+
     }],
     currentLineup:[],
+    CreatedIn: { type: Date, default: Date.now },
 });
 
 module.exports = mongo.model("team", Team);

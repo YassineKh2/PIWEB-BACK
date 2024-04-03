@@ -14,17 +14,22 @@ const {
     addplayers,
     addstaff,
     finishplayerprofile,
+    finishstaffprofile,
     getAllPlayers,
     getAllStaff,
     addTRM,
     addTM,
-    sendinvitationplayer,
+    sendinvitationmember,
     updateFollowedTeams,
     getTopPlayers,
     declineRequest,
     updatePlayersCurrentTeam,
     updateImage,
-    getplayersbyteam
+    getplayersbyteam,
+    getstaffbyteam,
+    getTeamMembers,
+    updateTeamMember,
+    getInvitationsByTeam
 } = require("../controllers/userController");
 
 const {userValidator} = require("../middlewares/validators");
@@ -45,12 +50,13 @@ router.get("/getuser/:id", getuser);
 router.post("/addplayers", addplayers);
 router.post("/addstaff", addstaff);
 router.post("/finishplayerprofile", uploadImgPlayer, finishplayerprofile);
+router.post("/finishstaffprofile", uploadImgStaff, finishstaffprofile);
 router.get("/getAllPlayers", getAllPlayers);
 router.get("/getAllStaff", getAllStaff);
 router.get("/getuser/:id", getuser);
 router.post("/addTRM", addTRM);
 router.post("/addTM", addTM);
-router.post("/sendinvitationplayer", sendinvitationplayer);
+router.post("/sendinvitationmember", sendinvitationmember);
 router.put("/updateFollowedTeams", updateFollowedTeams);
 router.get("/getTopPlayers/:id", getTopPlayers);
 router.post("/declineRequest", declineRequest);
@@ -58,4 +64,8 @@ router.post("/updatePlayersCurrentTeam", updatePlayersCurrentTeam);
 router.put("/updateplayerimage",uploadImgPlayer ,updateImage);
 router.put("/updatestaffimage",uploadImgStaff ,updateImage);
 router.get("/getplayersbyteam/:id" ,getplayersbyteam);
+router.get("/getstaffbyteam/:id" ,getstaffbyteam);
+router.get("/getTeamMembers/:id" ,getTeamMembers);
+router.put("/updateTeamMember" ,updateTeamMember);
+router.get("/getInvitationsByTeam/:id" ,getInvitationsByTeam);
 module.exports = router;
