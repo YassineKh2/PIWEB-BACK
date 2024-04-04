@@ -11,5 +11,6 @@ router.post('/checkStadiumAvailability', StadiumController.checkStadiumAvailabil
 router.put("/updateStadium/:id",StadiumController.updateStadium);
 
 router.delete("/delete/:id" ,StadiumController.deleteStadium);
+router.get("/getStadiumsByTournamentId/:tournamentId", StadiumController.getStadiumsByTournamentId);
 
 module.exports = router;

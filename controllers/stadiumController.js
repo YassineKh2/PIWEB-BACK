@@ -14,38 +14,44 @@ const addStadium = async (req, res, next) => {
   }
 };
 
-const updateStatusBasedOnMaintenance = async () => {
+const updateStadiumStatus = async () => {
   try {
     // Retrieve all stadiums from the database
     const stadiums = await Stadium.find();
 
-    // Loop through each stadium and update its status based on the maintenance period
+    // Get today's date
+    const today = new Date();
+    console.log('Today\'s date:', today);
+
+    // Loop through each stadium
     for (const stadium of stadiums) {
-      const today = new Date();
-      const startDate = new Date(stadium.maintenancePeriod.startDate);
-      const endDate = new Date(stadium.maintenancePeriod.endDate);
-
-      console.log('Stadium:', stadium.name);
-      console.log('Today:', today);
-      console.log('Start Date:', startDate);
-      console.log('End Date:', endDate);
-
-      // Compare only the date part (year, month, and day) without considering the time
-      const todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-      const startDateDate = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
-      const endDateDate = new Date(endDate.getFullYear(), endDate.getMonth(), endDate.getDate());
+      let status = 'available';
 
       // Check if today's date is within the maintenance period
-      let status;
-      if (todayDate >= startDateDate && todayDate <= endDateDate) {
-        // Update the status to 'unavailable'
-        status = 'unavailable';
-      } else {
-        // Update the status to 'available'
-        status = 'available';
-      }
+      const maintenanceStartDate = new Date(stadium.maintenancePeriod.startDate);
+      const maintenanceEndDate = new Date(stadium.maintenancePeriod.endDate);
 
-      console.log('Calculated Status:', status);
+      if (today >= maintenanceStartDate && today <= maintenanceEndDate) {
+        status = 'unavailable due to maintenance';
+      } else {
+        // Loop through each tournament ID in the stadium
+        for (const tournamentId of stadium.tournaments) {
+          // Find the tournament document using its ID
+          const tournament = await Tournament.findById(tournamentId);
+          
+          // If the tournament is not found or it's already ended, continue to the next tournament
+          if (!tournament || today > new Date(tournament.endDate)) {
+            continue;
+          }
+
+          // Check if today's date falls within the tournament period
+          if (today >= new Date(tournament.startDate) && today <= new Date(tournament.endDate)) {
+            // Update the status to 'unavailable' if a tournament is in process
+            status = 'unavailable due to tournament';
+            break; // No need to check further tournaments for this stadium
+          }
+        }
+      }
 
       // Update the stadium status
       stadium.status = status;
@@ -60,10 +66,11 @@ const updateStatusBasedOnMaintenance = async () => {
   }
 };
 
+
 // Schedule the status update task to run every day at midnight
 cron.schedule('* * * * *', async () => {
-  console.log('Running status update task...');
-  await updateStatusBasedOnMaintenance();
+  console.log('Running status update task based on tournament dates...');
+  await updateStadiumStatus();
 });
 
 
@@ -146,6 +153,7 @@ const checkStadiumAvailability = async (req, res) => {
 };
 
 
+
 const updateStadium = async (req, res) => {
   try {
     const { id } = req.params;
@@ -177,13 +185,53 @@ const deleteStadium = async (req, res) => {
   }
 };
 
+async function getStadiumsByTournamentId(req, res) {
+  const { tournamentId } = req.params; // Extract tournamentId from request parameters
+
+  try {
+    // Find stadiums associated with the given tournament ID
+    const stadiums = await Stadium.find({ tournaments: tournamentId });
+    return res.status(200).json(stadiums);
+  } catch (error) {
+    console.error('Error fetching stadiums by tournament ID:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+async function deleteStadiumFromTournament(req, res) {
+  const { tournamentId, stadiumId } = req.params;
+
+  try {
+    // Find the stadium by ID and update its tournaments array to remove the tournament ID
+    const updatedStadium = await Stadium.findByIdAndUpdate(
+      stadiumId,
+      { $pull: { tournaments: tournamentId } },
+      { new: true }
+    );
+
+    // Check if the stadium was found and updated successfully
+    if (!updatedStadium) {
+      return res.status(404).json({ error: 'Stadium not found' });
+    }
+
+    // Optionally, you can perform additional actions or send a response indicating success
+    return res.status(200).json({ message: 'Stadium deleted from tournament successfully' });
+  } catch (error) {
+    console.error('Error deleting stadium from tournament:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
 module.exports = {
     addStadium,
-    updateStatusBasedOnMaintenance,
+    updateStadiumStatus,
     getAllStadiums,
     getStadiumDetails,
     addStadiumsToTournament,
     checkStadiumAvailability,
     updateStadium,
-    deleteStadium
+    deleteStadium,
+    getStadiumsByTournamentId,
+    deleteStadiumFromTournament
   };

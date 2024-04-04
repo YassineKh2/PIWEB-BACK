@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
     console.log("User disconnected");
   });
 
-  StadiumController.updateStatusBasedOnMaintenance()
+  StadiumController.updateStadiumStatus()
   .then(() => console.log("Stadium statuses updated on server start"))
   .catch((error) => console.error("Error updating stadium statuses:", error));
 
