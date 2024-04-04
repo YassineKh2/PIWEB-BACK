@@ -1,7 +1,6 @@
 const yup = require('yup');
 
 const TeamValidator = async (req,res,next) => {
-    console.log(req.body);
     try{
         const schema = yup.object().shape({
             name: yup.string().min(3).required(),
@@ -19,7 +18,6 @@ const TeamValidator = async (req,res,next) => {
         next();
     }
     catch (error){
-
         res.status(400).send({ error: error.message });
     }
 }
