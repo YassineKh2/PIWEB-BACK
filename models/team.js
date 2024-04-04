@@ -26,7 +26,11 @@ const Team = new Schema({
     ranking: { type: Number, default: 1000 },
     creator:{ type: Schema.Types.ObjectId, ref: 'User' },
     managers:[{ type: Schema.Types.ObjectId, ref: 'User' }],
-    tournaments: [{ type: Schema.Types.ObjectId, ref: 'Tournament' }],
+    tournaments: [{
+        tournament:{ type: Schema.Types.ObjectId, ref: 'Tournament' },
+        date:{ type: Date, default: Date.now },
+        state:{ type: String, enum: Object.values(State), default: State.PENDING }
+    }],
     tournamentInvitations:[{
         tournament:{ type: Schema.Types.ObjectId, ref: 'Tournament' },
         date:{ type: Date, default: Date.now },
@@ -38,9 +42,10 @@ const Team = new Schema({
         logo:String,
         contact:Number,
         adresse:String,
-     
+
     }],
     currentLineup:[],
+    CreatedIn: { type: Date, default: Date.now },
 });
 
 module.exports = mongo.model("team", Team);

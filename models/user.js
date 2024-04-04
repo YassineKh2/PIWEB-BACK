@@ -15,6 +15,7 @@ const State = {
     ACCEPTED:'ACCEPTED',
     REFUSED:'REFUSED'
 };
+
 const User = new Schema({
 
 
@@ -62,12 +63,13 @@ const User = new Schema({
 
     // -------- Player Specific Attributes --------
     height:Number,
+    weight:Number,
     goals: {type:Number,default:0},
     assists:{type:Number,default:0},
-    state:String,
-    preferredFoot:String,
-    socialMediaHandle:String,
-    TeamJerseyNumber:Number,
+    HealthStatus:{ type: String, default: "H" },
+    preferredFoot:{ type: String, default: "" },
+    socialMediaHandle:{ type: String, default: "" },
+    teamJerseyNumber:{type:Number,default:0},
     PlayerRating:{type:Number,default:1000},
     // -------- Player Specific Attributes --------
 
@@ -81,10 +83,13 @@ const User = new Schema({
 
 
     // -------- Tournament Manager Specific Attributes --------
-    tournamentsManaged:[{ type: Schema.Types.ObjectId, ref: 'Tournament' }]
+    tournamentsManaged:[{ type: Schema.Types.ObjectId, ref: 'Tournament' }],
+    hasAccessTo :{
+        add:{ type: Boolean, default: false},
+        kick:{ type: Boolean, default: false},
+        editlineup:{ type: Boolean, default: false},
+    }
     // -------- Tournament Manager Specific Attributes --------
-
-
 
 });
 
