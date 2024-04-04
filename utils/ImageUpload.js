@@ -36,6 +36,7 @@ const uploadStaffImg = multer({ storage: storageStaff }).single('image')
 
 
 const uploadImg = (req, res, next) => {
+    console.log(req.body)
     upload(req, res, (err) => {
         if (err) {
             return res.status(400).json({ message: err.message })
@@ -64,8 +65,35 @@ const uploadImgStaff = (req, res, next) => {
     })
 }
 
+const storageCert = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/images/certificate/') // Assurez-vous que ce répertoire existe
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' +file.originalname)
+    }
+});
+
+const uploadCert = multer({ storage: storageCert }).single('certificate');
+
+
+
+const storageImg = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/images/image/') // Assurez-vous que ce répertoire existe
+    },
+    filename: (req, file, cb) => {
+        cb(null, Date.now() + '-' +file.originalname)
+    }
+});
+
+const uploadImgUser = multer({ storage: storageImg }).single('image');
+
+
 module.exports = {
     uploadImg,
     uploadImgPlayer,
+   uploadImgUser,
+    uploadCert,
     uploadImgStaff
 };

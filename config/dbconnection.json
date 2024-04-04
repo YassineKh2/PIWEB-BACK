@@ -1,3 +1,5 @@
 {
-    "url": "mongodb://127.0.0.1:27017/piweb"
+    "url": "mongodb://127.0.0.1:27017/piweb",
+    "urlDevops": "mongodb://192.168.33.10:27017/piweb"
 }
+
