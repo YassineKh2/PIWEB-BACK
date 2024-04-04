@@ -13,10 +13,11 @@ const addMatch = async (req, res, next) => {
 };
 const getTournamentMatches = async (req, res, next) => {
   try {
+
     const idTournament = req.params.idTournament;
 
     const matches = await match.find({ idTournament });
-
+console.log(matches)
     let matchList = [];
     for (let i = 0; i < matches.length; i++) {
       let match = {

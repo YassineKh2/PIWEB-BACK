@@ -3,6 +3,7 @@ const Schema = mongo.Schema;
 const Stadium = new Schema({
     name: { type: String, required: true },
     ownership: String ,
+
    
     address: {
       city: String ,
