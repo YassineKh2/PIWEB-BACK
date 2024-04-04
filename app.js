@@ -5,19 +5,18 @@ const cors = require("cors");
 const ReservationRouter = require("./routes/ReservationR");
 const SpRouter = require("./routes/SponsorsR");
 const tkRouter = require("./routes/TicketR");
-const paymentRoutes = require('./routes/payment');
+const paymentRoutes = require("./routes/payment");
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
 
 //-------------------Routes-------------------
 const tournamentRouter = require("./routes/tournament");
 const teamRouter = require("./routes/team");
-
 const matchRouter = require("./routes/match");
-
 const userRouter = require("./routes/user");
 const hotelRouter = require("./routes/hotel");
 const goalRouter = require("./routes/goal");
+const matchStatRouter = require("./routes/matchStat");
 const path = require("path");
 
 mongo
@@ -42,13 +41,14 @@ app.use("/tournament", tournamentRouter);
 app.use("/reservation", ReservationRouter);
 app.use("/sponsors", SpRouter);
 app.use("/ticket", tkRouter);
-app.use('/payment', paymentRoutes);
+app.use("/payment", paymentRoutes);
 
 app.use("/team", teamRouter);
 app.use("/match", matchRouter);
 app.use("/user", userRouter);
 app.use("/hotel", hotelRouter);
-app.use("/goal",goalRouter)
+app.use("/goal", goalRouter);
+app.use("/matchStat", matchStatRouter);
 const server = http.createServer(app);
 const io = require("socket.io")(server, {
   cors: {
@@ -59,10 +59,11 @@ const io = require("socket.io")(server, {
 io.on("connection", (socket) => {
   console.log("User connected");
 
-  // Handle score update event
   socket.on("updateScore", (updatedMatch) => {
-    // Broadcast the updated match to all connected clients
     io.emit("updateScore", updatedMatch);
+  });
+  socket.on("updateTournamentStats", (saveClicked, tournamentId) => {
+    io.emit("updateTournamentStats", saveClicked, tournamentId);
   });
 
   socket.on("disconnect", () => {

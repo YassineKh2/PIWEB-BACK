@@ -41,6 +41,11 @@ const Team = new Schema({
      
     }],
     currentLineup:[],
+    tournamentInvitations:[{
+        tournament:{ type: Schema.Types.ObjectId, ref: 'Tournament' },
+        date:{ type: Date, default: Date.now },
+        state:{ type: String, enum: Object.values(State), default: State.PENDING }
+    }],
 });
 
 module.exports = mongo.model("team", Team);

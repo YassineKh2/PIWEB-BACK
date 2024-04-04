@@ -1,6 +1,6 @@
 const Goal = require("../models/goal");
 const user = require("../models/user");
-const User = require("../models/user");
+const Team = require("../models/team");
 
 const getGoalById = async (id) => {
   try {
@@ -114,6 +114,45 @@ const updateGoal = async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+const getTournamentStatsWithInfo = async (req, res, next) => {
+  try {
+    const forTournament = req.params.forTournament;
+    const goals = await Goal.find({
+      forTournament: forTournament,
+    });
+    let goalsList = [];
+    for (let i = 0; i < goals.length; i++) {
+      let goal = {
+        _id: goals[i]._id,
+        scorer: await user.findById(goals[i].scorer),
+        matchId: goals[i].matchId,
+        forTeam: await Team.findById(goals[i].forTeam),
+        forTournament: goals[i].forTournament,
+        goalTime: goals[i].goalTime,
+        goalNumber: goals[i].goalNumber,
+        assistNumber: goals[i].assistNumber,
+        yellowCardsNumber: goals[i].yellowCardsNumber,
+        redCardsNumber: goals[i].redCardsNumber,
+        goalMinutes: goals[i].goalMinutes,
+        assistedBy: goals[i].assistedBy,
+        yellowCardMinutes: goals[i].yellowCardMinutes,
+        RedCardMinutes: goals[i].RedCardMinutes,
+      };
+
+      goalsList.push(goal);
+    }
+    // If no matches are found, return an empty array
+    if (!goalsList || goalsList.length === 0) {
+      return res.status(200).json({ goalsList });
+    }
+
+    // If matches are found, return them
+    res.status(200).json({ goalsList });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 module.exports = {
   getGoalById,
   addPlayerStat,
@@ -121,4 +160,5 @@ module.exports = {
   updateGoal,
   getTournamentGoals,
   getTournamentGoalsWithInfo,
+  getTournamentStatsWithInfo,
 };
