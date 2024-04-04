@@ -20,7 +20,6 @@ const addTournament = async (req, res, next) => {
 
     // Save the decoded image to the file
     fs.writeFileSync(filePath, decodedImage);
-
     const newTournament = new Tournament({
       name: req.body.name,
       description: req.body.description,
@@ -33,6 +32,7 @@ const addTournament = async (req, res, next) => {
       state: req.body.state,
       city: req.body.city,
       teams: req.body.teams,
+      teamsGroupStage: req.body.teamsGroupStage,
       creator: req.body.creator,
     });
     await newTournament.save();
