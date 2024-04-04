@@ -7,7 +7,7 @@ const paymentController = require('../controllers/paymentController');
 
 // Route to create a PaymentIntent
 router.post('/create-checkout-session', express.json(), paymentController.createCheckoutSession);
-
+router.get('/total-transaction-amount', paymentController.getTotalTransactionAmount);
 // Route to handle Stripe webhook
 router.post('/webhook', express.raw({type: 'application/json'}), paymentController.stripeWebhook);
 

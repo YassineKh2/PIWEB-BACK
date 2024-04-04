@@ -15,24 +15,31 @@ const State = {
     ACCEPTED:'ACCEPTED',
     REFUSED:'REFUSED'
 };
+
 const User = new Schema({
 
 
     // -------- Common Attributes --------
     firstName: String,
     lastName:String,
-    cin:Number,
+    cin:{ type: Number, default: "12345678"},
     email:String,
     birthDate:{ type: Date, default: Date.now },
     password:String,
     createdAt: { type: Date, default: Date.now },
     role: { type: String, enum: Object.values(Role) },
     bio:String,
-    image:{type:String , default:"../../../../../../public/images/userImage.png"},
+    image:{type:String , default:"public/images/image/userImage.png"},
     blocked: { type: Boolean, default: false},
-    accountState: { type: String, enum: Object.values(State), default: State.PENDING },
+    accountState: { type: String, enum: Object.values(State), default: State.ACCEPTED },
     certificate:{type:String,default:"no certificate"},
     followedTeams:[{ type: Schema.Types.ObjectId, ref: 'Team' }],
+    googleId:{ type: String, default:"no google Id" }, // Google's user ID
+    isGoogleAccount: { type: Boolean, default: false }, // Flag for users signed up via Google
+    resetCode: { type: String, default: ''},
+    resetCodeExpiry: {type: Date,default: Date.now},
+
+    
     teamInvitations:[{
         team:{ type: Schema.Types.ObjectId, ref: 'Team' },
         date:{ type: Date, default: Date.now },
@@ -56,12 +63,13 @@ const User = new Schema({
 
     // -------- Player Specific Attributes --------
     height:Number,
+    weight:Number,
     goals: {type:Number,default:0},
     assists:{type:Number,default:0},
-    state:String,
-    preferredFoot:String,
-    socialMediaHandle:String,
-    TeamJerseyNumber:Number,
+    HealthStatus:{ type: String, default: "H" },
+    preferredFoot:{ type: String, default: "" },
+    socialMediaHandle:{ type: String, default: "" },
+    teamJerseyNumber:{type:Number,default:0},
     PlayerRating:{type:Number,default:1000},
     // -------- Player Specific Attributes --------
 
@@ -75,10 +83,13 @@ const User = new Schema({
 
 
     // -------- Tournament Manager Specific Attributes --------
-    tournamentsManaged:[{ type: Schema.Types.ObjectId, ref: 'Tournament' }]
+    tournamentsManaged:[{ type: Schema.Types.ObjectId, ref: 'Tournament' }],
+    hasAccessTo :{
+        add:{ type: Boolean, default: false},
+        kick:{ type: Boolean, default: false},
+        editlineup:{ type: Boolean, default: false},
+    }
     // -------- Tournament Manager Specific Attributes --------
-
-
 
 });
 
