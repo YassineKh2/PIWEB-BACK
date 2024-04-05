@@ -47,6 +47,7 @@ const updateTeam = async (req, res) => {
         const team = await Team.findByIdAndUpdate(id, req.body, {new: true});
         res.status(200).json({team});
     } catch (error) {
+        console.log(req.body.tournaments);
         res.status(500).json({message: error.message});
     }
 }

@@ -8,6 +8,7 @@ const tkRouter = require("./routes/TicketR");
 const paymentRoutes = require("./routes/payment");
 const config = require("./config/dbconnection.json");
 const bodyParser = require("body-parser");
+const StadiumController = require("./controllers/stadiumController"); // Import your stadium controller
 require('dotenv').config();
 
 //-------------------Routes-------------------
@@ -17,6 +18,8 @@ const matchRouter = require("./routes/match");
 const geminiRouter= require("./routes/SyGenieR")
 const userRouter = require("./routes/user");
 const hotelRouter = require("./routes/hotel");
+const stadiumRouter = require("./routes/stadium");
+
 const goalRouter = require("./routes/goal");
 const matchStatRouter = require("./routes/matchStat");
 const path = require("path");
@@ -49,6 +52,8 @@ app.use("/team", teamRouter);
 app.use("/match", matchRouter);
 app.use("/user", userRouter);
 app.use("/hotel", hotelRouter);
+app.use("/stadium", stadiumRouter);
+
 app.use("/goal", goalRouter);
 app.use("/matchStat", matchStatRouter);
 app.use("/gem",geminiRouter);
@@ -72,6 +77,11 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
+
+  StadiumController.updateStadiumStatus()
+  .then(() => console.log("Stadium statuses updated on server start"))
+  .catch((error) => console.error("Error updating stadium statuses:", error));
+
 });
 
 server.listen(3000, console.log("server run"));
