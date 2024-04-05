@@ -32,8 +32,10 @@ const addTournament = async (req, res, next) => {
       state: req.body.state,
       city: req.body.city,
       teams: req.body.teams,
+      stadiums:req.body.stadiums,
       teamsGroupStage: req.body.teamsGroupStage,
       creator: req.body.creator,
+      status: req.body.status
     });
     await newTournament.save();
     res.status(201).json({ Tournament: newTournament });
