@@ -7,7 +7,9 @@ const Reservation= new Schema ({
     date:Date,
     nbplace:String,
     prix:Number,
-
+    team1:String,
+    team2:String,
+    matchId:String
 })
 
 
