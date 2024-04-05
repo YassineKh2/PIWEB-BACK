@@ -16,8 +16,8 @@ const client = new OAuth2Client("555697194556-cn6eo2qkn3p84fjfmnkvoa83ipi27me1.a
 
 /*const googleAuth = async (req, res) => {
     const { token } = req.body;
-    console.log("Token reçu:", token); 
-  
+    console.log("Token reçu:", token);
+
     try {
       // Vérifie le token Google
       const ticket = await client.verifyIdToken({
@@ -25,13 +25,13 @@ const client = new OAuth2Client("555697194556-cn6eo2qkn3p84fjfmnkvoa83ipi27me1.a
         audience: process.env.GOOGLE_CLIENT_ID, // Assurez-vous que cette variable d'environnement est bien définie
       });
       const payload = ticket.getPayload();
-  
+
       // Extrait les détails de l'utilisateur du payload
       const { sub: googleId, email, given_name: firstName, family_name: lastName } = payload;
-  
+
       // Vérifie si l'utilisateur existe déjà dans la base de données
       let user = await User.findOne({ email });
-  
+
       if (user) {
         // Si l'utilisateur existe mais n'est pas marqué comme un compte Google, le met à jour
         if (!user.isGoogleAccount) {
@@ -42,7 +42,7 @@ const client = new OAuth2Client("555697194556-cn6eo2qkn3p84fjfmnkvoa83ipi27me1.a
       } else {
         // Génère un mot de passe aléatoire pour l'utilisateur
         const randomPassword = crypto.randomBytes(20).toString('hex');
-  
+
         // Crée un nouvel utilisateur s'il n'existe pas
         user = new User({
           googleId,
@@ -55,10 +55,10 @@ const client = new OAuth2Client("555697194556-cn6eo2qkn3p84fjfmnkvoa83ipi27me1.a
         });
         await user.save();
       }
-  
+
       // Ici, implémentez votre logique de génération de token ou de création de session
       // Par exemple : res.status(200).json({ token: 'votre-jwt-token-ici' });
-  
+
       res.status(200).json({ success: true, message: 'Connexion Google réussie', user });
     }  catch (error) {
         console.error('Erreur lors de l\'authentification Google:', error);
@@ -70,8 +70,8 @@ const client = new OAuth2Client("555697194556-cn6eo2qkn3p84fjfmnkvoa83ipi27me1.a
 
   /*const googleAuth = async (req, res) => {
     const { token } = req.body;
-    console.log("Token reçu:", token); 
-  
+    console.log("Token reçu:", token);
+
     try {
         // Vérifie le token Google
         const ticket = await client.verifyIdToken({
@@ -79,15 +79,15 @@ const client = new OAuth2Client("555697194556-cn6eo2qkn3p84fjfmnkvoa83ipi27me1.a
             audience: process.env.GOOGLE_CLIENT_ID,
         });
         const payload = ticket.getPayload();
-  
+
         // Extrait les détails de l'utilisateur du payload
         //const { email } = payload;
         const { sub: googleId, email, given_name: firstName, family_name: lastName } = payload;
-  
-  
+
+
         // Vérifie si l'utilisateur existe déjà dans la base de données
         let user = await User.findOne({ email });
-  
+
         if (!user) {
             // Crée un nouvel utilisateur s'il n'existe pas
             user = new User({
@@ -100,14 +100,14 @@ const client = new OAuth2Client("555697194556-cn6eo2qkn3p84fjfmnkvoa83ipi27me1.a
             });
             await user.save();
         }
-  
+
         // Génération du token JWT avec les informations de l'utilisateur
         const userToken = jwt.sign({
             userId: user._id,
             email: user.email,
             role: user.role, // Incluez le rôle dans le payload
         }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  
+
         // Retourner l'utilisateur et le token JWT
         res.status(200).json({ success: true, message: 'Connexion Google réussie', user, token: userToken });
     } catch (error) {
@@ -179,7 +179,7 @@ const googleAuth = async (req, res) => {
 
 
 
-  
+
 /*const addUser = async (req, res, next) => {
     try {
         const newUser = new User(req.body);
@@ -231,7 +231,7 @@ const addTRM = async (req, res, next) => {
             createdAt: new Date(),
             certificate: req.file ? req.file.filename : undefined,
             accountState:'PENDING'
-            
+
         });
 
         // Enregistrer l'utilisateur dans la base de données
@@ -358,7 +358,7 @@ const addTRM = async (req, res, next) => {
     };
 
     let info = await transporter.sendMail(message);
-    
+
     // Réponse du serveur
     return res.status(201).json({
         success: true,
@@ -418,7 +418,7 @@ const addTM = async (req, res, next) => {
             createdAt: new Date(),
             certificate: req.file ? req.file.filename : undefined,
             accountState:'PENDING'
-            
+
         });
 
         // Enregistrer l'utilisateur dans la base de données
@@ -442,7 +442,7 @@ const addTM = async (req, res, next) => {
        let transporter = createTransport({
         service: 'outlook',
         auth: {
-           
+
             user: 'linkuptournament@outlook.com',
             pass: 'linkup123'
         }
@@ -546,7 +546,7 @@ const addTM = async (req, res, next) => {
     };
 
     let info = await transporter.sendMail(message);
-    
+
     // Réponse du serveur
     return res.status(201).json({
         success: true,
@@ -607,7 +607,7 @@ const addAdmin = async (req, res, next) => {
           password: hashedPassword,
           role: 'A',
           createdAt: new Date(),
-         
+
       });
 
       // Enregistrer l'utilisateur dans la base de données
@@ -648,7 +648,7 @@ const signup = async (req, res, next) => {
           password: hashedPassword,
           role: 'C',//Role.CLIENT, // Assuming you want to assign a default role
           createdAt: new Date(),
-        
+
       });
 
       // Enregistrer l'utilisateur dans la base de données
@@ -671,10 +671,10 @@ const signup = async (req, res, next) => {
         if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
             return res.status(400).json({success: false, error: 'Email et mot de passe requis'});
         }
-        
+
         // Rechercher l'utilisateur dans la base de données par email
         const user = await User.findOne({email});
-        
+
 
         if (user) {
             // Utilisation de crypto pour hacher le mot de passe de la même manière que lors du sign-up
@@ -717,7 +717,7 @@ const signin = async (req, res, next) => {
       }
 
       let user = await User.findOne({ email });
-      
+
       // If the user is not found in the User collection, check the Waitlist collection
       if (!user) {
           const userInWaitlist = await Waitlist.findOne({ email });
@@ -815,7 +815,7 @@ const getuser = async (req, res, next) => {
     let id = req.params.id;
     try {
         const user = await User.findById(id);
-        
+
         res.status(200).json({user});
     } catch (error) {
         res.status(500).json({message: error.message});
@@ -1385,7 +1385,7 @@ const updateImage = async (req, res) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-  
+
       // Mettre à jour le mot de passe si présent
       if (req.body.password) {
         req.body.password = crypto
@@ -1393,13 +1393,13 @@ const updateImage = async (req, res) => {
           .update(req.body.password)
           .digest("hex");
       }
-  
+
       req.body.image = req.body.imagename;
-  
+
       // Appliquer les mises à jour
       Object.assign(user, req.body);
       await user.save();
-  
+
       res.status(200).json({ user });
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -1411,6 +1411,7 @@ const getplayersbyteam = async (req, res) => {
         const teamId = req.params.id;
         const users = await User.find({PlayingFor: teamId, role: 'P'});
 
+        res.status(200).json(users);
     } catch (error) {
         res.status(500).json({message: error.message});
     }
@@ -1528,10 +1529,10 @@ const refuseUser = async (req, res) => {
 const updateUserImage = async (req, res) => {
 
  try {
-        const { userId } = req.params; 
-        const imagePath = req.file.path; 
+        const { userId } = req.params;
+        const imagePath = req.file.path;
 
-       
+
         const updatedUser = await User.findByIdAndUpdate(userId, { image: imagePath }, { new: true });
 
         res.status(200).json({ success: true, message: "Image de profil mise à jour avec succès", user: updatedUser });
@@ -1585,21 +1586,21 @@ const updatePassword = async (req, res) => {
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
-  
+
     try {
       const user = await User.findOne({ email: email });
       if (!user) {
         return res.status(200).json({ message: "If the email is registered, a reset code will be sent." });
       }
-  
+
       // Generate a random 6-digit code
       const resetCode = crypto.randomInt(100000, 999999).toString();
-  
+
       // Update user with reset code and expiry (1 hour from now)
       user.resetCode = resetCode;
       user.resetCodeExpiry = new Date(Date.now() + 3600000); // 1 hour in milliseconds
       await user.save();
-  
+
       // Set up email transporter
       const transporter = createTransport({
         service: 'outlook', // Use your email service
@@ -1608,7 +1609,7 @@ const updatePassword = async (req, res) => {
           pass: 'linkup123',
         },
       });
-  
+
       // Email options
       const mailOptions = {
         from: 'linkuptournament@outlook.com',
@@ -1616,12 +1617,12 @@ const updatePassword = async (req, res) => {
         subject: 'Password Reset Code',
         text: `Your password reset code is: ${resetCode}`,
       };
-  
+
       // Send email
       const info = await transporter.sendMail(mailOptions);
       console.log('Email sent:', getTestMessageUrl(info));
       return res.status(200).json({ message: "Reset code sent to email." });
-  
+
     } catch (error) {
       console.error('ForgotPassword Error:', error);
       return res.status(500).json({ message: "Server error." });
@@ -1633,22 +1634,22 @@ const updatePassword = async (req, res) => {
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
-  
+
     try {
       const user = await User.findOne({ email: email });
       if (!user) {
         // For security reasons, do not reveal whether an email is registered
         return res.status(200).json({ message: "If the email is registered, a reset code will be sent." });
       }
-  
+
       // Generate a random 6-digit code
       const resetCode = crypto.randomInt(100000, 999999).toString();
-  
+
       // Update user with reset code and expiry (1 hour from now)
       user.resetCode = resetCode;
       user.resetCodeExpiry = new Date(Date.now() + 3600000); // 1 hour in milliseconds
       await user.save();
-  
+
       // Set up email transporter
       const transporter = createTransport({
         service: 'outlook',
@@ -1657,7 +1658,7 @@ const updatePassword = async (req, res) => {
           pass: 'linkup123',
         },
       });
-  
+
       // Email options
       const mailOptions = {
         from: 'linkuptournament@outlook.com',
@@ -1665,12 +1666,12 @@ const updatePassword = async (req, res) => {
         subject: 'Password Reset Code',
         text: `Your password reset code is: ${resetCode}`,
       };
-  
+
       // Send email
       await transporter.sendMail(mailOptions);
       console.log('Reset code sent to email: ' + email);
       return res.status(200).json({ message: "Reset code sent to email." });
-  
+
     } catch (error) {
       console.error('ForgotPassword Error:', error);
       return res.status(500).json({ message: "Server error." });
@@ -1680,20 +1681,20 @@ const updatePassword = async (req, res) => {
 
   const verifyRecoveryCode = async (req, res) => {
     const { email, recoveryCode } = req.body;
-    
+
     if (!email || !recoveryCode) {
         return res.status(400).json({ message: "Email and recovery code are required." });
     }
-    
+
     try {
         const user = await User.findOne({ email: email });
         if (!user) {
             return res.status(404).json({ message: "User not found." });
         }
-        
+
         // Check if the code matches and is not expired
         const isCodeValid = user.resetCode === recoveryCode && user.resetCodeExpiry > Date.now();
-        
+
         if (!isCodeValid) {
             return res.status(400).json({ message: "Invalid or expired recovery code." });
         }
@@ -1779,7 +1780,7 @@ const updatePasswordAfterRecovery = async (req, res) => {
         res.status(500).json({ success: false, message: "Erreur lors de la mise à jour du mot de passe." });
     }
 };
-  
+
 module.exports = {
     signup,
     signin,
