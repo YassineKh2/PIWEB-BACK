@@ -51,8 +51,8 @@ const getAllTournaments = async (req, res, next) => {
       tournaments[i] = {
         ...tournaments[i]._doc,
         creatorInfo: {
-          firstName: creator.firstName,
-          lastName: creator.lastName,
+          firstName: creator?.firstName,
+          lastName: creator?.lastName,
         },
       };
     }
@@ -60,6 +60,9 @@ const getAllTournaments = async (req, res, next) => {
     if (!tournaments || tournaments.length === 0) {
       throw new Error("tournaments not found!");
     }
+
+
+
     res.status(200).json({ tournaments });
   } catch (error) {
     res.status(500).json({ message: error.message });
