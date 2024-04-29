@@ -11,7 +11,8 @@ const {
     getTeamByUser,
     getTeam,
     getTeams,
-    updateLineup
+    updateLineup,
+    updateImage
 } = require("../controllers/teamController");
 const {TeamValidator} = require("../middlewares/validators");
 const {uploadImg} = require("../utils/ImageUpload");
@@ -28,5 +29,6 @@ router.get("/getTeamByUser/:id", getTeamByUser);
 router.get("/getTeam/:id", getTeam);
 router.post("/getTeams", getTeams);
 router.put("/updateLineup", updateLineup);
+router.put("/updateImage",uploadImg, updateImage);
 
 module.exports = router;
