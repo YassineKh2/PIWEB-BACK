@@ -271,6 +271,15 @@ const signup = async (req, res, next) => {
   }
 };
 
+// Function to award badges based on consecutive visits
+const awardBadges = (user) => {
+  if (user.consecutiveVisits === 5) {
+    user.badges.push("Super Fan");
+  }
+  // Add more badge awarding logic here if needed
+};
+
+
 const signin = async (req, res, next) => {
   try {
     const { email, password } = req.body;

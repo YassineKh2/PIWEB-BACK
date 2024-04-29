@@ -1,4 +1,5 @@
 const mongo = require("mongoose");
+const { number } = require("yup");
 const Schema = mongo.Schema;
 
 const Role = {
@@ -75,9 +76,17 @@ const User = new Schema({
 
 
     // -------- Tournament Manager Specific Attributes --------
-    tournamentsManaged:[{ type: Schema.Types.ObjectId, ref: 'Tournament' }]
+    tournamentsManaged:[{ type: Schema.Types.ObjectId, ref: 'Tournament' }],
     // -------- Tournament Manager Specific Attributes --------
 
+//--------------Gamification elements Specific Attributes---------
+/*
+matchViews: { type: Number, default: 0 },
+lastLogin: Date,
+consecutiveVisits: { type: Number, default: 1 },
+badges: [String]
+*/
+//--------------Gamification elements Specific Attributes----------
 
 
 });

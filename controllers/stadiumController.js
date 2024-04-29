@@ -68,7 +68,7 @@ const updateStadiumStatus = async () => {
 
 
 // Schedule the status update task to run every day at midnight
-cron.schedule('* * * * *', async () => {
+cron.schedule('15 * * * *', async () => {
   console.log('Running status update task based on tournament dates...');
   await updateStadiumStatus();
 });
