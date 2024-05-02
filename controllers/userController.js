@@ -9,6 +9,9 @@ const {createTransport, getTestMessageUrl} = require("nodemailer");
 const {config} = require("dotenv");
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client("555697194556-cn6eo2qkn3p84fjfmnkvoa83ipi27me1.apps.googleusercontent.com");
+const speakeasy = require('speakeasy');
+const qrcode = require('qrcode');
+const nodemailer = require('nodemailer');
 
 
 
@@ -708,7 +711,9 @@ const signup = async (req, res, next) => {
     }
 }*/
 
-const signin = async (req, res, next) => {
+/////////////////////////////////////////////////////////////
+
+/*const signin = async (req, res, next) => {
   try {
       const { email, password } = req.body;
 
@@ -753,7 +758,68 @@ const signin = async (req, res, next) => {
   }  catch (error) {
       res.status(500).json({message: error.message});
   }
+};*/
+
+const signin = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ success: false, error: 'Email and password are required.' });
+    }
+
+    let user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({ success: false, error: 'Email does not exist.' });
+    }
+
+    if (user.blocked) {
+      return res.status(401).json({ success: false, error: 'Your account is blocked.' });
+    }
+
+    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+    if (hashedPassword !== user.password) {
+      return res.status(401).json({ success: false, error: 'Password is incorrect.' });
+    }
+
+    const twoFactorAuth = user.twoFactorAuth && user.twoFactorAuth.enabled;
+
+
+    // If 2FA is not enabled, redirect to QR code page for setup
+    if (user.twoFactorAuth && !user.twoFactorAuth.enabled) {
+      return res.json({
+        success: true,
+        twoFactorSetupRequired: true,
+        //twoFactorEnabled:false,
+        userId: user._id,
+        message: "2FA is not enabled. Please set up using the QR code."
+      });
+    }
+
+    if (twoFactorAuth) {
+     /* const token = jwt.sign({ 
+        userId: user._id,
+        email: user.email,
+        role: user.role
+      }, process.env.JWT_SECRET, { expiresIn: '1h' });*/
+      return res.json({
+        success: true,
+       // token: token,
+       
+        message: 'Successfully authenticated.'
+      });
+  
+    }
+   
+   
+
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 };
+
+
 
 
 const getAllUsers = async (req, res, next) => {
@@ -763,6 +829,17 @@ const getAllUsers = async (req, res, next) => {
     } catch (error) {
         res.status(500).json({message: error.message});
     }
+
+}
+
+
+const getAllUsersImages = async (req, res, next) => {
+  try {
+      const usersData = await User.find({}, {image:1,email:1});
+      res.status(200).json({usersData});
+  } catch (error) {
+      res.status(500).json({message: error.message});
+  }
 
 }
 
@@ -1781,6 +1858,135 @@ const updatePasswordAfterRecovery = async (req, res) => {
     }
 };
 
+/*const enable2FA = async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found.' });
+    }
+    const secret = speakeasy.generateSecret({ length: 20 });
+    user.twoFactorAuth = { secret: secret.base32, enabled: false };
+    await user.save();
+    qrcode.toDataURL(secret.otpauth_url, (err, data_url) => {
+      if (err) {
+        throw err;
+      }
+      res.json({ qrcode: data_url });
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};*/
+
+ const enable2FA = async (req, res) => {
+   console.log("enable2FA called", new Date());
+  try {
+     const { userId } = req.body;
+     const user = await User.findById(userId);
+     if (!user) {
+       return res.status(404).json({ success: false, message: 'User not found.' });
+     }
+
+     // Generate a secret key for the user
+     const secret = speakeasy.generateSecret({ length: 20 });
+     user.twoFactorAuth = { secret: secret.base32, enabled: false };
+    await user.save();
+
+     // Generate QR code URL
+     const otpauthUrl = secret.otpauth_url;
+
+    // Generate QR code image
+  qrcode.toDataURL(otpauthUrl, async (err, data_url) => {     
+    if (err) {
+         console.log('Error generating QR code:', err);
+         return res.status(500).json({ success: false, message: 'Error generating QR code.' });
+       }
+
+       // Send email with QR code
+       const transporter = nodemailer.createTransport({
+         service: 'outlook',
+         auth: {
+           user: process.env.EMAIL_USERNAME,
+           pass: process.env.EMAIL_PASSWORD,
+         },
+      });
+
+       // Attach the QR code as an inline image
+       const mailOptions = {
+         from: 'linkuptournament@outlook.com',
+         to: user.email,
+         subject: 'Two-Factor Authentication Setup',
+         html: `<p>Scan the QR code below to set up two-factor authentication:</p><img src="cid:qr-code">`,
+         attachments: [{
+          filename: 'qr-code.png',
+          path: data_url,
+           cid: 'qr-code' // same CID as referenced in the html img src
+      }]
+       };
+
+      transporter.sendMail(mailOptions, function(error, info) {
+        if (error) {
+           console.log('Error sending email:', error);
+          return res.status(500).send('Error sending email.');
+        } else {
+           console.log('Email sent:', info.response);
+          res.status(200).json({ success: true, message: 'QR code sent to your email.' });
+         }
+       });
+     });
+   } catch (error) {
+     console.log("Server Error:", error);
+     res.status(500).json({ success: false, message: `Server error: ${error.message}` });
+   }
+ };
+
+const verify2FA = async (req, res) => {
+  try {
+    const { userId, token } = req.body;
+    const user = await User.findById(userId);
+    
+    if (!user) {
+      return res.status(400).json({ success: false, message: 'User not found.' });
+    }
+    
+    if (!user.twoFactorAuth || !user.twoFactorAuth.secret) {
+      return res.status(400).json({ success: false, message: '2FA is not set up.' });
+    }
+
+    const isVerified = speakeasy.totp.verify({
+      secret: user.twoFactorAuth.secret,
+      encoding: 'base32',
+      token: token
+    });
+
+    if (isVerified) {
+      // Si la vérification est un succès, définissez 2FA comme étant activée
+      //user.twoFactorAuth.enabled = true;
+      await user.save();
+
+      // Générez le JWT token après activation de la 2FA
+      const jwtToken = jwt.sign({
+        userId: user._id,
+        email: user.email,
+        role: user.role
+      }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+      res.json({ 
+        success: true, 
+        message: '2FA verification successful and enabled', 
+        token: jwtToken,
+         //twoFactorEnabled:true 
+        });
+    } else {
+      res.status(400).json({ success: false, message: 'Invalid 2FA token' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+
 module.exports = {
     signup,
     signin,
@@ -1822,5 +2028,16 @@ module.exports = {
     updatePasswordAfterRecovery,
     addstaff,
     getAllStaff,
-    updateFollowedTournaments
+    sendinvitationplayer,
+    updateFollowedTeams,
+    getTopPlayers,
+    googleAuth,
+  declineRequest,
+  updatePlayersCurrentTeam,
+  getplayersbyteam,
+    forgotPassword,
+  updateFollowedTournaments,
+  enable2FA,
+  verify2FA,
+  getAllUsersImages
 };

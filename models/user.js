@@ -84,6 +84,13 @@ const User = new Schema({
 
     // -------- Tournament Manager Specific Attributes --------
     tournamentsManaged:[{ type: Schema.Types.ObjectId, ref: 'Tournament' }],
+    // -------- Tournament Manager Specific Attributes --------
+
+    twoFactorAuth: {
+        secret: String,
+        enabled: Boolean
+      },
+
     hasAccessTo :{
         add:{ type: Boolean, default: false},
         kick:{ type: Boolean, default: false},
