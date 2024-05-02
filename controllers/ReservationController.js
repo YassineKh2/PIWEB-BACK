@@ -12,6 +12,7 @@ async function add(req,res){
         res.status(400).json({error:err});
     }
 }
+
 async function getall (req,res){
     try{
     const data =await Reservation.find()

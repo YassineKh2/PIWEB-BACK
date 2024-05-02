@@ -9,6 +9,7 @@ const Ticket = new Schema({
         ref: 'Reservation',
         required: true
     }
+    
 });
 
 module.exports = mongo.model("Ticket", Ticket);

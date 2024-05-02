@@ -22,6 +22,7 @@ const {
     addplayers,
     addstaff,
     finishplayerprofile,
+    finishstaffprofile,
     getAllPlayers,
      addTRM,
      addTM,
@@ -36,17 +37,21 @@ const {
      verifyRecoveryCode,
      updatePasswordAfterRecovery,
      getAllStaff,
-     sendinvitationplayer,
     updateFollowedTeams,
     getTopPlayers,
     declineRequest,
     updatePlayersCurrentTeam,
     updateImage,
     getplayersbyteam,
-    updateFollowedTournaments,
     enable2FA,
     verify2FA,
-    getAllUsersImages
+    getAllUsersImages,
+    getstaffbyteam,
+    getTeamMembers,
+    updateTeamMember,
+    getInvitationsByTeam,
+    sendinvitationmember,
+    updateFollowedTournaments
 } = require("../controllers/userController");
 
 const {userValidator} = require("../middlewares/validators");
@@ -147,8 +152,7 @@ router.patch("/block/:id", blockUser);
 router.patch("/unblock/:id", unBlockUser);
 router.get('/profile', getUserProfile);
 router.get("/getuser/:id", getuser);
-router.post("/addplayers", addplayers);
-router.post("/finishplayerprofile", uploadImgPlayer,finishplayerprofile);
+router.post("/addplayers", addplayers);;
 router.get("/getWaitList",getWaitList);
 router.get("/getAllPlayers",getAllPlayers);
 router.get("/getUserWaiting/:id",getUserWaiting);
@@ -164,8 +168,10 @@ router.put('/update-password-recovery', updatePasswordAfterRecovery);
 router.post('/forgot-password', forgotPassword);
 router.post('/verify-recovery-code', verifyRecoveryCode);
 router.post("/addstaff", addstaff);
+router.post("/finishplayerprofile", uploadImgPlayer, finishplayerprofile);
+router.post("/finishstaffprofile", uploadImgStaff, finishstaffprofile);
 router.get("/getAllStaff", getAllStaff);
-router.post("/sendinvitationplayer", sendinvitationplayer);
+router.post("/sendinvitationmember", sendinvitationmember);
 router.put("/updateFollowedTeams", updateFollowedTeams);
 router.get("/getTopPlayers/:id", getTopPlayers);
 router.post("/declineRequest", declineRequest);
@@ -173,6 +179,10 @@ router.post("/updatePlayersCurrentTeam", updatePlayersCurrentTeam);
 router.put("/updateplayerimage",uploadImgPlayer ,updateImage);
 router.put("/updatestaffimage",uploadImgStaff ,updateImage);
 router.get("/getplayersbyteam/:id" ,getplayersbyteam);
+router.get("/getstaffbyteam/:id" ,getstaffbyteam);
+router.get("/getTeamMembers/:id" ,getTeamMembers);
+router.put("/updateTeamMember" ,updateTeamMember);
+router.get("/getInvitationsByTeam/:id" ,getInvitationsByTeam);
 router.put("/updateFollowedTournaments", updateFollowedTournaments);
 router.post('/enable-2fa',enable2FA);
 router.post('/verify-2fa',verify2FA);

@@ -19,8 +19,8 @@ const nodemailer = require('nodemailer');
 
 /*const googleAuth = async (req, res) => {
     const { token } = req.body;
-    console.log("Token reçu:", token); 
-  
+    console.log("Token reçu:", token);
+
     try {
       // Vérifie le token Google
       const ticket = await client.verifyIdToken({
@@ -28,13 +28,13 @@ const nodemailer = require('nodemailer');
         audience: process.env.GOOGLE_CLIENT_ID, // Assurez-vous que cette variable d'environnement est bien définie
       });
       const payload = ticket.getPayload();
-  
+
       // Extrait les détails de l'utilisateur du payload
       const { sub: googleId, email, given_name: firstName, family_name: lastName } = payload;
-  
+
       // Vérifie si l'utilisateur existe déjà dans la base de données
       let user = await User.findOne({ email });
-  
+
       if (user) {
         // Si l'utilisateur existe mais n'est pas marqué comme un compte Google, le met à jour
         if (!user.isGoogleAccount) {
@@ -45,7 +45,7 @@ const nodemailer = require('nodemailer');
       } else {
         // Génère un mot de passe aléatoire pour l'utilisateur
         const randomPassword = crypto.randomBytes(20).toString('hex');
-  
+
         // Crée un nouvel utilisateur s'il n'existe pas
         user = new User({
           googleId,
@@ -58,10 +58,10 @@ const nodemailer = require('nodemailer');
         });
         await user.save();
       }
-  
+
       // Ici, implémentez votre logique de génération de token ou de création de session
       // Par exemple : res.status(200).json({ token: 'votre-jwt-token-ici' });
-  
+
       res.status(200).json({ success: true, message: 'Connexion Google réussie', user });
     }  catch (error) {
         console.error('Erreur lors de l\'authentification Google:', error);
@@ -73,8 +73,8 @@ const nodemailer = require('nodemailer');
 
   /*const googleAuth = async (req, res) => {
     const { token } = req.body;
-    console.log("Token reçu:", token); 
-  
+    console.log("Token reçu:", token);
+
     try {
         // Vérifie le token Google
         const ticket = await client.verifyIdToken({
@@ -82,15 +82,15 @@ const nodemailer = require('nodemailer');
             audience: process.env.GOOGLE_CLIENT_ID,
         });
         const payload = ticket.getPayload();
-  
+
         // Extrait les détails de l'utilisateur du payload
         //const { email } = payload;
         const { sub: googleId, email, given_name: firstName, family_name: lastName } = payload;
-  
-  
+
+
         // Vérifie si l'utilisateur existe déjà dans la base de données
         let user = await User.findOne({ email });
-  
+
         if (!user) {
             // Crée un nouvel utilisateur s'il n'existe pas
             user = new User({
@@ -103,14 +103,14 @@ const nodemailer = require('nodemailer');
             });
             await user.save();
         }
-  
+
         // Génération du token JWT avec les informations de l'utilisateur
         const userToken = jwt.sign({
             userId: user._id,
             email: user.email,
             role: user.role, // Incluez le rôle dans le payload
         }, process.env.JWT_SECRET, { expiresIn: '1h' });
-  
+
         // Retourner l'utilisateur et le token JWT
         res.status(200).json({ success: true, message: 'Connexion Google réussie', user, token: userToken });
     } catch (error) {
@@ -182,7 +182,7 @@ const googleAuth = async (req, res) => {
 
 
 
-  
+
 /*const addUser = async (req, res, next) => {
     try {
         const newUser = new User(req.body);
@@ -209,15 +209,15 @@ const addTRM = async (req, res, next) => {
         const { firstName, lastName, email, password ,birthDate,accountState,certificate} = req.body;
 
         // Validation des données d'entrée
-        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' ||  typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
-            return res.status(400).json({ success: false, error: 'Prénom, nom, email et mot de passe requis' });
+        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' || typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+            return res.status(400).json({success: false, error: 'Prénom, nom, email et mot de passe requis'});
         }
 
         // Vérifier si l'utilisateur existe déjà
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
 
         if (existingUser) {
-            return res.status(400).json({ success: false, error: 'Cet email est déjà utilisé' });
+            return res.status(400).json({success: false, error: 'Cet email est déjà utilisé'});
         }
 
         // Hacher le mot de passe avant de l'enregistrer dans la base de données
@@ -234,7 +234,7 @@ const addTRM = async (req, res, next) => {
             createdAt: new Date(),
             certificate: req.file ? req.file.filename : undefined,
             accountState:'PENDING'
-            
+
         });
 
         // Enregistrer l'utilisateur dans la base de données
@@ -361,7 +361,7 @@ const addTRM = async (req, res, next) => {
     };
 
     let info = await transporter.sendMail(message);
-    
+
     // Réponse du serveur
     return res.status(201).json({
         success: true,
@@ -396,15 +396,15 @@ const addTM = async (req, res, next) => {
         const { firstName, lastName, email, password ,birthDate,accountState,certificate} = req.body;
 
         // Validation des données d'entrée
-        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' ||  typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
-            return res.status(400).json({ success: false, error: 'Prénom, nom, email et mot de passe requis' });
+        if (!firstName || !lastName || !email || !password || typeof firstName !== 'string' || typeof lastName !== 'string' || typeof email !== 'string' || typeof password !== 'string') {
+            return res.status(400).json({success: false, error: 'Prénom, nom, email et mot de passe requis'});
         }
 
         // Vérifier si l'utilisateur existe déjà
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({email});
 
         if (existingUser) {
-            return res.status(400).json({ success: false, error: 'Cet email est déjà utilisé' });
+            return res.status(400).json({success: false, error: 'Cet email est déjà utilisé'});
         }
 
         // Hacher le mot de passe avant de l'enregistrer dans la base de données
@@ -421,7 +421,7 @@ const addTM = async (req, res, next) => {
             createdAt: new Date(),
             certificate: req.file ? req.file.filename : undefined,
             accountState:'PENDING'
-            
+
         });
 
         // Enregistrer l'utilisateur dans la base de données
@@ -445,7 +445,7 @@ const addTM = async (req, res, next) => {
        let transporter = createTransport({
         service: 'outlook',
         auth: {
-           
+
             user: 'linkuptournament@outlook.com',
             pass: 'linkup123'
         }
@@ -549,7 +549,7 @@ const addTM = async (req, res, next) => {
     };
 
     let info = await transporter.sendMail(message);
-    
+
     // Réponse du serveur
     return res.status(201).json({
         success: true,
@@ -610,7 +610,7 @@ const addAdmin = async (req, res, next) => {
           password: hashedPassword,
           role: 'A',
           createdAt: new Date(),
-         
+
       });
 
       // Enregistrer l'utilisateur dans la base de données
@@ -651,7 +651,7 @@ const signup = async (req, res, next) => {
           password: hashedPassword,
           role: 'C',//Role.CLIENT, // Assuming you want to assign a default role
           createdAt: new Date(),
-        
+
       });
 
       // Enregistrer l'utilisateur dans la base de données
@@ -674,10 +674,10 @@ const signup = async (req, res, next) => {
         if (!email || !password || typeof email !== 'string' || typeof password !== 'string') {
             return res.status(400).json({success: false, error: 'Email et mot de passe requis'});
         }
-        
+
         // Rechercher l'utilisateur dans la base de données par email
         const user = await User.findOne({email});
-        
+
 
         if (user) {
             // Utilisation de crypto pour hacher le mot de passe de la même manière que lors du sign-up
@@ -722,7 +722,7 @@ const signup = async (req, res, next) => {
       }
 
       let user = await User.findOne({ email });
-      
+
       // If the user is not found in the User collection, check the Waitlist collection
       if (!user) {
           const userInWaitlist = await Waitlist.findOne({ email });
@@ -892,7 +892,7 @@ const getuser = async (req, res, next) => {
     let id = req.params.id;
     try {
         const user = await User.findById(id);
-        
+
         res.status(200).json({user});
     } catch (error) {
         res.status(500).json({message: error.message});
@@ -1184,18 +1184,20 @@ const addstaff = async (req, res) => {
       },
     });
 
-    let results = [];
-    for (let staffMember of staff) {
-      const newUser = new User({
-        firstName: staffMember.staffname,
-        email: staffMember.email,
-        password: hashedPassword,
-        role: "S",
-        createdAt: new Date(),
-        PlayingFor: teamId,
-      });
-      let user = await newUser;
-      user.save();
+        let results = [];
+        for (let staffMember of staff) {
+            const newUser = new User({
+                firstName: staffMember.staffname,
+                lastName: staffMember.lastName ? staffMember.lastName : '',
+                email: staffMember.email,
+                position: staffMember.position ? staffMember.position : '',
+                password: hashedPassword,
+                role: "S",
+                createdAt: new Date(),
+                PlayingFor: teamId
+            });
+            let user = await newUser;
+            user.save();
 
       const token = jwt.sign(
         {
@@ -1288,64 +1290,103 @@ const finishplayerprofile = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+const finishstaffprofile = async (req, res) => {
+    try {
+        let id = req.body._id;
+        // Hash the password if it exists in the request body
+        if (req.body.password) {
+            req.body.imagename, // Save the filename in the database
+
+                req.body.password = crypto.createHash('sha256').update(req.body.password).digest('hex');
+        }
+
+
+        req.body.accountState = "ACCEPTED";
+        req.body.image = req.body.imagename;
+
+        const user = await User.findByIdAndUpdate(id, req.body, {new: true});
+        res.status(200).json({user});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+};
 const getAllPlayers = async (req, res) => {
-  try {
-    const users = await User.find({ role: "P" });
-    res.status(200).json({ users });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-const getAllStaff = async (req, res) => {
-  try {
-    const users = await User.find({ role: "S" });
-    res.status(200).json({ users });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-const sendinvitationplayer = async (req, res) => {
-  try {
-    let players = req.body.invitedPlayers;
-    let idTeam = req.body.idTeam;
-
-    players.map(async (player) => {
-      if (player.preferences.TeamInvitations) {
-        invite = {
-          team: idTeam,
-          date: new Date(),
-          state: "PENDING",
-        };
-        player.teamInvitations.push(invite);
-        await User.findById(player._id).updateOne(player);
-      }
-    });
-
-    res.status(200).json({ players });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-const updateFollowedTeams = async (req, res) => {
-  try {
-    const { _id, followedTeams } = req.body;
-
-    const user = await User.findById(_id);
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    try {
+        const users = await User.find({role: 'P'});
+        res.status(200).json({users});
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
 
-    user.followedTeams = followedTeams;
+}
+const getAllStaff = async (req, res) => {
+    try {
+        const users = await User.find({role: 'S'});
+        res.status(200).json({users});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
 
-    await user.save();
+}
+const sendinvitationmember = async (req, res) => {
+    try {
+        let players = req.body.invitedPlayers;
+        let idTeam = req.body.idTeam
+        let staff = req.body.invitedStaff;
+        let invitation = {
+            "team": idTeam,
+            "date": new Date(),
+            "state": "PENDING"
+        }
+        if (players) {
+            players.map(async (player) => {
 
-    res.status(200).json("Added Teams");
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+                if (player.preferences.TeamInvitations) {
+                    player.teamInvitations.push(invitation)
+                    await User.updateOne({_id: player._id}, {$set: player});
+                }
+
+
+            })
+        }
+        if (staff) {
+            staff.map(async (staff) => {
+                if (staff.preferences.TeamInvitations) {
+                    staff.teamInvitations.push(invitation)
+                    await User.updateOne({_id: staff._id}, {$set: staff});
+                }
+            })
+        }
+
+        res.status(200).json("Invitations sent");
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
+
+const updateFollowedTeams = async (req, res) => {
+    try {
+        const {_id, followedTeams} = req.body;
+
+        const user = await User.findById(_id);
+
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+
+        user.followedTeams = followedTeams;
+
+        await user.save();
+
+        res.status(200).json("Added Teams");
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+}
+
+
+
 const updateFollowedTournaments = async (req, res) => {
   try {
     const { _id, followedTournaments } = req.body;
@@ -1367,15 +1408,15 @@ const updateFollowedTournaments = async (req, res) => {
 };
 
 const getTopPlayers = async (req, res) => {
-  let teamId = req.params.id;
-  try {
-    const players = await User.find({ PlayingFor: teamId })
-      .sort({ PlayerRating: -1 })
-      .limit(4);
-    res.status(200).json(players);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+    let teamId = req.params.id;
+    try {
+        const players = await User.find({PlayingFor: teamId})
+            .sort({PlayerRating: -1})
+            .limit(4);
+        res.status(200).json(players);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
 };
 const declineRequest = async (req, res) => {
   let playerid = req.body.player;
@@ -1387,10 +1428,10 @@ const declineRequest = async (req, res) => {
     );
     player.save();
 
-    res.status(200).json("Decline Invite !");
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+        res.status(200).json("Decline Invite !");
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
 };
 
 const updatePlayersCurrentTeam = async (req, res) => {
@@ -1400,7 +1441,8 @@ const updatePlayersCurrentTeam = async (req, res) => {
     player.PlayingFor = req.body.PlayingFor;
     player.jointedTeamDate = null;
 
-    if (req.body.PlayingFor) player.jointedTeamDate = new Date();
+        if (req.body.PlayingFor)
+            player.jointedTeamDate = new Date();
 
     player.previousTeams = req.body.previousTeams;
     player.teamInvitations = player.teamInvitations.filter(
@@ -1408,88 +1450,132 @@ const updatePlayersCurrentTeam = async (req, res) => {
     );
     player.save();
 
-    res.status(200).json("Teams Updated !");
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+        res.status(200).json("Teams Updated !");
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
 };
 const updateImage = async (req, res) => {
-  try {
-    const id = req.body._id;
-    const user = await User.findById(id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    try {
+      const id = req.body._id;
+      const user = await User.findById(id);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Mettre à jour le mot de passe si présent
+      if (req.body.password) {
+        req.body.password = crypto
+          .createHash("sha256")
+          .update(req.body.password)
+          .digest("hex");
+      }
+
+      req.body.image = req.body.imagename;
+
+      // Appliquer les mises à jour
+      Object.assign(user, req.body);
+      await user.save();
+
+      res.status(200).json({ user });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
     }
-
-    // Mettre à jour le mot de passe si présent
-    if (req.body.password) {
-      req.body.password = crypto
-        .createHash("sha256")
-        .update(req.body.password)
-        .digest("hex");
-    }
-
-    req.body.image = req.body.imagename;
-
-    // Appliquer les mises à jour
-    Object.assign(user, req.body);
-    await user.save();
-
-    res.status(200).json({ user });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+  };
 
 const getplayersbyteam = async (req, res) => {
-  try {
-    const teamId = req.params.id;
-    const users = await User.find({ PlayingFor: teamId, role: "P" });
-
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
-
-
-const confirmUser = async (req, res) => {
     try {
-        const { userId } = req.params;
+        const teamId = req.params.id;
+        const users = await User.find({PlayingFor: teamId, role: 'P'});
 
-        // Trouver l'utilisateur dans la waitlist, pas dans la collection User
-        const userInWaitlist = await Waitlist.findById(userId);
-
-        if (!userInWaitlist) {
-            return res.status(404).json({ success: false, message: "Utilisateur non trouvé dans la waitlist." });
-        }
-
-        // Créer l'utilisateur dans la collection `User` avec les informations de la waitlist
-        const newUser = new User({
-            firstName: userInWaitlist.firstName,
-            lastName: userInWaitlist.lastName,
-            email: userInWaitlist.email,
-            password: userInWaitlist.password, // Supposer que le mot de passe est déjà haché
-            birthDate: userInWaitlist.birthDate,
-            role: userInWaitlist.role,
-            certificate: userInWaitlist.certificate,
-            accountState: 'ACCEPTED', // L'état du compte est maintenant accepté
-            createdAt: new Date() // ou userInWaitlist.createdAt si vous avez conservé cette information
-        });
-
-        await newUser.save();
-
-        // Supprimer l'utilisateur de la waitlist
-        await Waitlist.findByIdAndDelete(userId);
-
-        return res.status(200).json({ success: true, message: "Utilisateur confirmé et transféré avec succès." });
-
+        res.status(200).json(users);
     } catch (error) {
-        console.error("Erreur lors de la confirmation et du transfert de l'utilisateur :", error);
-        return res.status(500).json({ success: false, message: "Erreur serveur.", error: error.message });
+        res.status(500).json({message: error.message});
+    }
+};
+const getstaffbyteam = async (req, res) => {
+    try {
+        const teamId = req.params.id;
+        const users = await User.find({PlayingFor: teamId, role: 'S'});
+
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+};
+const getTeamMembers = async (req, res) => {
+    try {
+        const teamId = req.params.id;
+        const users = await User.find({PlayingFor: teamId});
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({message: error.message});
     }
 };
 
+const updateTeamMember = async (req, res) => {
+    try {
+        const id = req.body._id;
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(404).json({message: "User not found"});
+        }
+        await User.updateOne({_id: id}, {$set: req.body});
+
+        res.status(200).json({message: "User updated successfully"});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
+const getInvitationsByTeam = async (req, res) => {
+    try {
+        let teamId = req.params.id;
+        let users = await User.find();
+
+        let userWithInvitation = {
+            user:{},
+            invitation:{}
+        }
+
+        let filteredUsers = []
+
+
+        let hasInvite = {
+            state:false,
+            invitation:{}
+        }
+        users.forEach((user)=>{
+            user.teamInvitations.forEach((invitation)=>{
+                if(invitation.team.toString() === teamId)
+                {
+                    hasInvite.state = true;
+                    hasInvite.invitation = invitation
+                }
+            })
+            if(hasInvite.state){
+                userWithInvitation.user = user
+                userWithInvitation.invitation = hasInvite.invitation
+                filteredUsers.push(userWithInvitation)
+                hasInvite = {
+                    state:false,
+                    invitation:{}
+                }
+                userWithInvitation = {
+                    user:{},
+                    invitation:{}
+                }
+
+
+            }
+
+        })
+        res.status(200).json(filteredUsers);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+
+}
 
 
 const refuseUser = async (req, res) => {
@@ -1520,10 +1606,10 @@ const refuseUser = async (req, res) => {
 const updateUserImage = async (req, res) => {
 
  try {
-        const { userId } = req.params; 
-        const imagePath = req.file.path; 
+        const { userId } = req.params;
+        const imagePath = req.file.path;
 
-       
+
         const updatedUser = await User.findByIdAndUpdate(userId, { image: imagePath }, { new: true });
 
         res.status(200).json({ success: true, message: "Image de profil mise à jour avec succès", user: updatedUser });
@@ -1577,21 +1663,21 @@ const updatePassword = async (req, res) => {
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
-  
+
     try {
       const user = await User.findOne({ email: email });
       if (!user) {
         return res.status(200).json({ message: "If the email is registered, a reset code will be sent." });
       }
-  
+
       // Generate a random 6-digit code
       const resetCode = crypto.randomInt(100000, 999999).toString();
-  
+
       // Update user with reset code and expiry (1 hour from now)
       user.resetCode = resetCode;
       user.resetCodeExpiry = new Date(Date.now() + 3600000); // 1 hour in milliseconds
       await user.save();
-  
+
       // Set up email transporter
       const transporter = createTransport({
         service: 'outlook', // Use your email service
@@ -1600,7 +1686,7 @@ const updatePassword = async (req, res) => {
           pass: 'linkup123',
         },
       });
-  
+
       // Email options
       const mailOptions = {
         from: 'linkuptournament@outlook.com',
@@ -1608,12 +1694,12 @@ const updatePassword = async (req, res) => {
         subject: 'Password Reset Code',
         text: `Your password reset code is: ${resetCode}`,
       };
-  
+
       // Send email
       const info = await transporter.sendMail(mailOptions);
       console.log('Email sent:', getTestMessageUrl(info));
       return res.status(200).json({ message: "Reset code sent to email." });
-  
+
     } catch (error) {
       console.error('ForgotPassword Error:', error);
       return res.status(500).json({ message: "Server error." });
@@ -1625,22 +1711,22 @@ const updatePassword = async (req, res) => {
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
-  
+
     try {
       const user = await User.findOne({ email: email });
       if (!user) {
         // For security reasons, do not reveal whether an email is registered
         return res.status(200).json({ message: "If the email is registered, a reset code will be sent." });
       }
-  
+
       // Generate a random 6-digit code
       const resetCode = crypto.randomInt(100000, 999999).toString();
-  
+
       // Update user with reset code and expiry (1 hour from now)
       user.resetCode = resetCode;
       user.resetCodeExpiry = new Date(Date.now() + 3600000); // 1 hour in milliseconds
       await user.save();
-  
+
       // Set up email transporter
       const transporter = createTransport({
         service: 'outlook',
@@ -1649,7 +1735,7 @@ const updatePassword = async (req, res) => {
           pass: 'linkup123',
         },
       });
-  
+
       // Email options
       const mailOptions = {
         from: 'linkuptournament@outlook.com',
@@ -1657,12 +1743,12 @@ const updatePassword = async (req, res) => {
         subject: 'Password Reset Code',
         text: `Your password reset code is: ${resetCode}`,
       };
-  
+
       // Send email
       await transporter.sendMail(mailOptions);
       console.log('Reset code sent to email: ' + email);
       return res.status(200).json({ message: "Reset code sent to email." });
-  
+
     } catch (error) {
       console.error('ForgotPassword Error:', error);
       return res.status(500).json({ message: "Server error." });
@@ -1672,20 +1758,20 @@ const updatePassword = async (req, res) => {
 
   const verifyRecoveryCode = async (req, res) => {
     const { email, recoveryCode } = req.body;
-    
+
     if (!email || !recoveryCode) {
         return res.status(400).json({ message: "Email and recovery code are required." });
     }
-    
+
     try {
         const user = await User.findOne({ email: email });
         if (!user) {
             return res.status(404).json({ message: "User not found." });
         }
-        
+
         // Check if the code matches and is not expired
         const isCodeValid = user.resetCode === recoveryCode && user.resetCodeExpiry > Date.now();
-        
+
         if (!isCodeValid) {
             return res.status(400).json({ message: "Invalid or expired recovery code." });
         }
@@ -1700,6 +1786,42 @@ const updatePassword = async (req, res) => {
     } catch (error) {
         console.error('Error verifying recovery code:', error);
         res.status(500).json({ message: "Internal server error." });
+    }
+};
+const confirmUser = async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Trouver l'utilisateur dans la waitlist, pas dans la collection User
+        const userInWaitlist = await Waitlist.findById(userId);
+
+        if (!userInWaitlist) {
+            return res.status(404).json({ success: false, message: "Utilisateur non trouvé dans la waitlist." });
+        }
+
+        // Créer l'utilisateur dans la collection `User` avec les informations de la waitlist
+        const newUser = new User({
+            firstName: userInWaitlist.firstName,
+            lastName: userInWaitlist.lastName,
+            email: userInWaitlist.email,
+            password: userInWaitlist.password, // Supposer que le mot de passe est déjà haché
+            birthDate: userInWaitlist.birthDate,
+            role: userInWaitlist.role,
+            certificate: userInWaitlist.certificate,
+            accountState: 'ACCEPTED', // L'état du compte est maintenant accepté
+            createdAt: new Date() // ou userInWaitlist.createdAt si vous avez conservé cette information
+        });
+
+        await newUser.save();
+
+        // Supprimer l'utilisateur de la waitlist
+        await Waitlist.findByIdAndDelete(userId);
+
+        return res.status(200).json({ success: true, message: "Utilisateur confirmé et transféré avec succès." });
+
+    } catch (error) {
+        console.error("Erreur lors de la confirmation et du transfert de l'utilisateur :", error);
+        return res.status(500).json({ success: false, message: "Erreur serveur.", error: error.message });
     }
 };
 
@@ -1881,9 +2003,20 @@ module.exports = {
     getUserWaiting,
     addplayers,
     finishplayerprofile,
+    finishstaffprofile,
     getWaitList,
     getAllPlayers,
     addTM,
+    sendinvitationmember,
+    updateFollowedTeams,
+    getTopPlayers,
+    declineRequest,
+    updatePlayersCurrentTeam,
+    getplayersbyteam,
+    getstaffbyteam,
+    getTeamMembers,
+    updateTeamMember,
+    getInvitationsByTeam,
     confirmUser,
     refuseUser,
     getUserByEmail,

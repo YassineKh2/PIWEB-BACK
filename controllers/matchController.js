@@ -13,10 +13,11 @@ const addMatch = async (req, res, next) => {
 };
 const getTournamentMatches = async (req, res, next) => {
   try {
+
     const idTournament = req.params.idTournament;
 
     const matches = await match.find({ idTournament });
-
+console.log(matches)
     let matchList = [];
     for (let i = 0; i < matches.length; i++) {
       let match = {
@@ -126,6 +127,26 @@ const getEmptyMatch = async (req, res, next) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+const getmatchinfo = async (req, res, next) => {
+  try {
+    let id = req.params.id;
+
+
+    const matchfound = await match.findById(id);
+
+    if (!matchfound) {
+      return res.status(404).json({ message: "Match not found" });
+    }
+
+    res.status(200).json(matchfound);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+
+
 module.exports = {
   addMatch,
   getTournamentMatches,
@@ -133,4 +154,5 @@ module.exports = {
   deleteMatchesByTournamentId,
   getEmptyMatch,
   getTournamentMatchesDraw,
+  getmatchinfo
 };

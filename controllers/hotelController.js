@@ -54,15 +54,19 @@ const getHotelsByIdTournament = async (req, res, next) => {
   }
 };
 
-const deleteHotel = async (req, res, next) => {
-  let id = req.params.id;
-  try{
-      const hotel = await Hotel.findByIdAndDelete(id);
-      res.status(200).json({hotel});
+
+const deleteHotelsByTournamentAndCity = async (req, res) => {
+  try {
+    const { tournamentId,city } = req.params;
+    // Delete hotels where tournamentId matches and city matches
+    await Hotel.deleteMany({ idTournament:tournamentId });
+    res.status(200).json({ message: 'Hotels deleted successfully' });
   } catch (error) {
-      res.status(500).json({message: error.message});
+    console.error('Error deleting hotels:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 };
 
 
-module.exports = { addHotel,getHotelIds,getHotelsByIdTournament,deleteHotel};
+
+module.exports = { addHotel,getHotelIds,getHotelsByIdTournament,deleteHotelsByTournamentAndCity};

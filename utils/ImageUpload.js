@@ -36,6 +36,7 @@ const uploadStaffImg = multer({ storage: storageStaff }).single('image')
 
 
 const uploadImg = (req, res, next) => {
+    console.log(req.body)
     upload(req, res, (err) => {
         if (err) {
             return res.status(400).json({ message: err.message })

@@ -1,5 +1,6 @@
 
 const axios = require("axios");
+const nodemailer = require('nodemailer');
 
 exports.geminiAnalyseWithText = async (req, res, next) => {
     const { text } = req.body;
@@ -38,6 +39,33 @@ exports.geminiAnalyseWithText = async (req, res, next) => {
       console.error('Erreur lors de la requête à Google Gemini:', error);
       res.status(500).json({ message: 'Une erreur s\'est produite lors de la requête à Google Gemini' });
     }
+    
   };
+  exports.sendEmailToAdmin = async (req, res, next) => {
+    const { userEmail, message, clientName } = req.body;
   
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'sirineghribi2001@gmail.com',
+        pass: 'gzgh qmkc darm wlub',
+      },
+    });
+  
+    const mailOptions = {
+      from: 'sirineghribi2001@gmail.com',
+      to: 'sirine.ghribi@esprit.tn',
+      subject: 'Client Reclamation',
+      text: `Hello, we received a reclamation from our client ${clientName}.\n\nMessage: ${message}\n\nUser Email: ${userEmail}`,
+    };
+  
+    try {
+      const info = await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully:', info.response);
+      res.status(200).json({ success: true, message: 'Email sent successfully' });
+    } catch (error) {
+      console.error('Error sending email:', error);
+      res.status(500).json({ success: false, message: 'Failed to send email. Please try again later.' });
+    }
+  };
   

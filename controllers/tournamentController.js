@@ -32,8 +32,10 @@ const addTournament = async (req, res, next) => {
       state: req.body.state,
       city: req.body.city,
       teams: req.body.teams,
+      stadiums:req.body.stadiums,
       teamsGroupStage: req.body.teamsGroupStage,
       creator: req.body.creator,
+      status: req.body.status
     });
     await newTournament.save();
     res.status(201).json({ Tournament: newTournament });
@@ -50,8 +52,8 @@ const getAllTournaments = async (req, res, next) => {
       tournaments[i] = {
         ...tournaments[i]._doc,
         creatorInfo: {
-          firstName: creator.firstName,
-          lastName: creator.lastName,
+          firstName: creator?.firstName,
+          lastName: creator?.lastName,
         },
       };
     }
@@ -59,6 +61,9 @@ const getAllTournaments = async (req, res, next) => {
     if (!tournaments || tournaments.length === 0) {
       throw new Error("tournaments not found!");
     }
+
+
+
     res.status(200).json({ tournaments });
   } catch (error) {
     res.status(500).json({ message: error.message });
