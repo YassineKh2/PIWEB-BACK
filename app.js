@@ -122,20 +122,21 @@ const processChatMessage = (message) => {
 const generateResponse = (text) => {
   console.log("Text received:", text);
 
-  const lowerText = text.toLowerCase().trim()
-  if (/(qu'est-ce que linkuptournament|linkuptournament)/i.test(lowerText)) {
+  const lowerText = text.toLowerCase().trim();
+  if (/qu'est-ce que linkuptournament|linkuptournament/i.test(lowerText)) {
     return "LinkUpTournament est une plateforme en ligne pour organiser des tournois.";
-} else if (/(comment faire une reservation pour un match|reservation match)/i.test(lowerText)) {
+  } else if (/comment faire une reservation pour un match|reservation match/i.test(lowerText)) {
     return "Pour faire une réservation pour un match, accédez au tournoi, choisissez le tournoi désiré, cliquez sur 'Détails' et vous trouverez l'option pour réserver.";
-} else if (/(comment saisir un avis sur un match|avis match)/i.test(lowerText)) {
+  } else if (/comment saisir un avis sur un match|avis match/i.test(lowerText)) {
     return "Pour saisir un avis sur un match, accédez au tournoi, choisissez le tournoi désiré, cliquez sur 'Détails' et vous pourrez saisir votre avis.";
-} else if (/(comment voir tous les tournois disponibles|tournois disponibles)/i.test(lowerText)) {
+  } else if (/comment voir tous les tournois disponibles|tournois disponibles/i.test(lowerText)) {
     return "Pour voir tous les tournois disponibles, accédez à la section des tournois dans la barre de navigation.";
-} else {
+  } else {
     // Réponse par défaut
     return "Merci pour votre message. Comment puis-je vous assister aujourd'hui ?";
-}
+  }
 };
+
 
 server.listen(3000, console.log("server run"));
 module.exports = app;

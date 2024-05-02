@@ -7,7 +7,7 @@ router.get('/',function(req,res){
     res.send('helllo');
 });
 
-
+router.post('/sendemail',SyGenieC.sendEmailToAdmin);
 router.post('/gemini' ,SyGenieC.geminiAnalyseWithText)
 
 module.exports = router;
