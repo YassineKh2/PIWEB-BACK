@@ -798,7 +798,7 @@ const signin = async (req, res, next) => {
     }
 
     if (twoFactorAuth) {
-     /* const token = jwt.sign({ 
+     /* const token = jwt.sign({
         userId: user._id,
         email: user.email,
         role: user.role
@@ -806,13 +806,13 @@ const signin = async (req, res, next) => {
       return res.json({
         success: true,
        // token: token,
-       
+
         message: 'Successfully authenticated.'
       });
-  
+
     }
-   
-   
+
+
 
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -1897,7 +1897,7 @@ const updatePasswordAfterRecovery = async (req, res) => {
      const otpauthUrl = secret.otpauth_url;
 
     // Generate QR code image
-  qrcode.toDataURL(otpauthUrl, async (err, data_url) => {     
+  qrcode.toDataURL(otpauthUrl, async (err, data_url) => {
     if (err) {
          console.log('Error generating QR code:', err);
          return res.status(500).json({ success: false, message: 'Error generating QR code.' });
@@ -1917,7 +1917,7 @@ const updatePasswordAfterRecovery = async (req, res) => {
          from: 'linkuptournament@outlook.com',
          to: user.email,
          subject: 'Two-Factor Authentication Setup',
-         html: `<p>Scan the QR code below to set up two-factor authentication:</p><img src="cid:qr-code">`,
+         html: `<p>Scan the QR code below to set up two-factor authentication:</p><img src="cid:qr-code" alt="qrcode">`,
          attachments: [{
           filename: 'qr-code.png',
           path: data_url,
@@ -1945,11 +1945,11 @@ const verify2FA = async (req, res) => {
   try {
     const { userId, token } = req.body;
     const user = await User.findById(userId);
-    
+
     if (!user) {
       return res.status(400).json({ success: false, message: 'User not found.' });
     }
-    
+
     if (!user.twoFactorAuth || !user.twoFactorAuth.secret) {
       return res.status(400).json({ success: false, message: '2FA is not set up.' });
     }
@@ -1972,11 +1972,11 @@ const verify2FA = async (req, res) => {
         role: user.role
       }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-      res.json({ 
-        success: true, 
-        message: '2FA verification successful and enabled', 
+      res.json({
+        success: true,
+        message: '2FA verification successful and enabled',
         token: jwtToken,
-         //twoFactorEnabled:true 
+         //twoFactorEnabled:true
         });
     } else {
       res.status(400).json({ success: false, message: 'Invalid 2FA token' });
@@ -2028,14 +2028,6 @@ module.exports = {
     updatePasswordAfterRecovery,
     addstaff,
     getAllStaff,
-    sendinvitationplayer,
-    updateFollowedTeams,
-    getTopPlayers,
-    googleAuth,
-  declineRequest,
-  updatePlayersCurrentTeam,
-  getplayersbyteam,
-    forgotPassword,
   updateFollowedTournaments,
   enable2FA,
   verify2FA,
