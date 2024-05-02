@@ -25,6 +25,7 @@ const stadiumRouter = require("./routes/stadium");
 const goalRouter = require("./routes/goal");
 const matchStatRouter = require("./routes/matchStat");
 const path = require("path");
+const {addChatMessage} = require("./controllers/chatmessageController");
 
 mongo
   .connect(config.url, {
@@ -92,6 +93,11 @@ io.on("connection", (socket) => {
   StadiumController.updateStadiumStatus()
   .then(() => console.log("Stadium statuses updated on server start"))
   .catch((error) => console.error("Error updating stadium statuses:", error));
+
+  socket.on("message",(data)=>{
+    addChatMessage(data).then(r => console.log("message added"+r))
+    io.emit("message",data)
+  })
 
 });
 

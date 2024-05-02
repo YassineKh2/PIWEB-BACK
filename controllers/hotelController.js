@@ -59,7 +59,7 @@ const deleteHotelsByTournamentAndCity = async (req, res) => {
   try {
     const { tournamentId,city } = req.params;
     // Delete hotels where tournamentId matches and city matches
-    await Hotel.deleteMany({ tournamentId,city });
+    await Hotel.deleteMany({ idTournament:tournamentId });
     res.status(200).json({ message: 'Hotels deleted successfully' });
   } catch (error) {
     console.error('Error deleting hotels:', error);

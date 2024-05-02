@@ -39,7 +39,7 @@ const User = new Schema({
     resetCode: { type: String, default: ''},
     resetCodeExpiry: {type: Date,default: Date.now},
 
-    
+
     teamInvitations:[{
         team:{ type: Schema.Types.ObjectId, ref: 'Team' },
         date:{ type: Date, default: Date.now },
