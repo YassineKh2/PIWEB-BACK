@@ -1,5 +1,12 @@
 const express = require("express");
 const router = express.Router();
+const User=require('../models/user');
+const jwt = require('jsonwebtoken');
+const multer = require("multer"); // Import multer for handling form data
+const uploadd = multer({ dest: 'uploadd/' });
+const { spawn } = require('child_process');
+
+const path = require('path');
 const {
     signup,
     getAllUsers,
@@ -36,11 +43,98 @@ const {
     updatePlayersCurrentTeam,
     updateImage,
     getplayersbyteam,
-    updateFollowedTournaments
+    updateFollowedTournaments,
+    enable2FA,
+    verify2FA,
+    getAllUsersImages
 } = require("../controllers/userController");
 
 const {userValidator} = require("../middlewares/validators");
 const {uploadImgPlayer,uploadCert,uploadImgUser,uploadImgStaff} = require("../utils/ImageUpload");
+
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET, {
+      expiresIn: '1d',
+    });
+  };
+  
+  router.post('/imglogin', async (req, res) => {
+    const { userId } = req.body;
+  
+    try {
+      const user = await User.findById(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      res.json({
+        _id: user._id,
+        email: user.email,
+        role:user.role,
+         token: generateToken(user._id)
+       
+       });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+
+  router.post('/face', uploadd.single('image'), (req, res) => {
+    if (!req.file) {
+      return res.status(400).send('No image uploaded.');
+    }
+  
+    const pythonExecutable = 'C:/Program Files/Python311/python';
+    const scriptPath = 'C:/Users/Zeineb Ben Mami/Desktop/py/face.py';
+    const imagePath = req.file.path;
+  
+    const pythonProcess = spawn(pythonExecutable, [scriptPath, imagePath]);
+  
+    let dataToSend = '';
+    pythonProcess.stdout.on('data', (data) => {
+      dataToSend += data.toString();
+    });
+  
+    pythonProcess.stderr.on('data', (data) => {
+      console.error(`stderr: ${data.toString()}`);
+    });
+  
+    pythonProcess.on('close', (code) => {
+      if (code !== 0) {
+        res.status(500).send(`Python script error with exit code ${code}`);
+      } else {
+        try {
+          const jsonData = JSON.parse(dataToSend); // Ensure this is parsed as JSON
+          res.send(jsonData);
+        } catch (error) {
+          res.status(500).send('Failed to parse Python output as JSON');
+        }
+      }
+    });
+  });
+ 
+
+  router.get('/findUserByImage/:imageName', async (req, res) => {
+    // Obtenir le nom de l'image et remplacer toutes les barres obliques par des barres obliques inversées pour correspondre au format de la base de données
+    const normalizedImageName = req.params.imageName.replace(/\//g, '\\');
+
+    // Construire le chemin complet en utilisant le format attendu par la base de données
+    const imagePath = `public\\images\\image\\${normalizedImageName}`;
+
+    console.log("Normalized Image Path:", imagePath); // Log pour déboguer
+
+    try {
+        const user = await User.findOne({ image: imagePath });
+        if (user) {
+            res.send({ userId: user._id });
+        } else {
+            res.status(404).send({ message: 'User not found for the given image', debugPath: imagePath });
+        }
+    } catch (error) {
+        res.status(500).send({ message: 'Error accessing the database', error: error.message });
+    }
+});
 
 
 router.get("/getall", getAllUsers);
@@ -80,4 +174,7 @@ router.put("/updateplayerimage",uploadImgPlayer ,updateImage);
 router.put("/updatestaffimage",uploadImgStaff ,updateImage);
 router.get("/getplayersbyteam/:id" ,getplayersbyteam);
 router.put("/updateFollowedTournaments", updateFollowedTournaments);
+router.post('/enable-2fa',enable2FA);
+router.post('/verify-2fa',verify2FA);
+router.post("/getallImages", getAllUsersImages);
 module.exports = router;
