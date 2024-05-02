@@ -62,49 +62,49 @@ const generateToken = (id) => {
       expiresIn: '1d',
     });
   };
-  
+
   router.post('/imglogin', async (req, res) => {
     const { userId } = req.body;
-  
+
     try {
       const user = await User.findById(userId);
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-  
+
       res.json({
         _id: user._id,
         email: user.email,
         role:user.role,
          token: generateToken(user._id)
-       
+
        });
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   });
-  
+
 
   router.post('/face', uploadd.single('image'), (req, res) => {
     if (!req.file) {
       return res.status(400).send('No image uploaded.');
     }
-  
+
     const pythonExecutable = 'C:/Program Files/Python311/python';
-    const scriptPath = 'C:/Users/Zeineb Ben Mami/Desktop/py/face.py';
+    const scriptPath = 'C:\\Users\\yassine\\Desktop\\9raya\\PI TWIN - Tournova\\PIWEB-BACK\\face.py';
     const imagePath = req.file.path;
-  
+
     const pythonProcess = spawn(pythonExecutable, [scriptPath, imagePath]);
-  
+
     let dataToSend = '';
     pythonProcess.stdout.on('data', (data) => {
       dataToSend += data.toString();
     });
-  
+
     pythonProcess.stderr.on('data', (data) => {
       console.error(`stderr: ${data.toString()}`);
     });
-  
+
     pythonProcess.on('close', (code) => {
       if (code !== 0) {
         res.status(500).send(`Python script error with exit code ${code}`);
@@ -118,7 +118,7 @@ const generateToken = (id) => {
       }
     });
   });
- 
+
 
   router.get('/findUserByImage/:imageName', async (req, res) => {
     // Obtenir le nom de l'image et remplacer toutes les barres obliques par des barres obliques inversées pour correspondre au format de la base de données
