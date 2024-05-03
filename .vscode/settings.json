@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "undefined/subscriptions/94088f4e-8870-428b-9482-f4cfc351ec3e/resourceGroups/piweb-back/providers/Microsoft.Web/sites/piweb-back",
+    "appService.deploySubpath": "."
+}

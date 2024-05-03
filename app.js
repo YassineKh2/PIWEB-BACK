@@ -1,6 +1,8 @@
 const express = require("express");
 const http = require("http");
 const mongo = require("mongoose");
+
+
 const cors = require("cors");
 const ReservationRouter = require("./routes/ReservationR");
 const SpRouter = require("./routes/SponsorsR");
@@ -27,8 +29,12 @@ const matchStatRouter = require("./routes/matchStat");
 const path = require("path");
 const {addChatMessage} = require("./controllers/chatmessageController");
 
+
+const mongoAtlasUri = "mongodb+srv://yassinkhemiri02:Yassin2002@piweb.iymtmru.mongodb.net/?retryWrites=true&w=majority&appName=piweb?ssl=true";
+
+
 mongo
-  .connect(config.url, {
+  .connect(mongoAtlasUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -85,7 +91,7 @@ io.on("connection", (socket) => {
   socket.on("updateTournamentStats", (saveClicked, tournamentId) => {
     io.emit("updateTournamentStats", saveClicked, tournamentId);
   });
- 
+
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
@@ -145,4 +151,5 @@ const generateResponse = (text) => {
 
 
 server.listen(3000, console.log("server run"));
+
 module.exports = app;
