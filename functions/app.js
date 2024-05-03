@@ -1,33 +1,33 @@
 const express = require("express");
 const http = require("http");
 const mongo = require("mongoose");
-
+const serverless = require("serverless-http");
 
 const cors = require("cors");
-const ReservationRouter = require("./routes/ReservationR");
-const SpRouter = require("./routes/SponsorsR");
-const tkRouter = require("./routes/TicketR");
-const paymentRoutes = require("./routes/payment");
-const config = require("./config/dbconnection.json");
+const ReservationRouter = require("../routes/ReservationR");
+const SpRouter = require("../routes/SponsorsR");
+const tkRouter = require("../routes/TicketR");
+const paymentRoutes = require("../routes/payment");
+const config = require("../config/dbconnection.json");
 const bodyParser = require("body-parser");
 const nlp = require('compromise');
 
-const StadiumController = require("./controllers/stadiumController"); // Import your stadium controller
+const StadiumController = require("../controllers/stadiumController"); // Import your stadium controller
 require('dotenv').config();
 
 //-------------------Routes-------------------
-const tournamentRouter = require("./routes/tournament");
-const teamRouter = require("./routes/team");
-const matchRouter = require("./routes/match");
-const geminiRouter= require("./routes/SyGenieR")
-const userRouter = require("./routes/user");
-const hotelRouter = require("./routes/hotel");
-const stadiumRouter = require("./routes/stadium");
+const tournamentRouter = require("../routes/tournament");
+const teamRouter = require("../routes/team");
+const matchRouter = require("../routes/match");
+const geminiRouter= require("../routes/SyGenieR")
+const userRouter = require("../routes/user");
+const hotelRouter = require("../routes/hotel");
+const stadiumRouter = require("../routes/stadium");
 
-const goalRouter = require("./routes/goal");
-const matchStatRouter = require("./routes/matchStat");
+const goalRouter = require("../routes/goal");
+const matchStatRouter = require("../routes/matchStat");
 const path = require("path");
-const {addChatMessage} = require("./controllers/chatmessageController");
+const {addChatMessage} = require("../controllers/chatmessageController");
 
 
 const mongoAtlasUri = "mongodb+srv://yassinkhemiri02:Yassin2002@piweb.iymtmru.mongodb.net/?retryWrites=true&w=majority&appName=piweb?ssl=true";
@@ -150,6 +150,13 @@ const generateResponse = (text) => {
 };
 
 
-server.listen(3000, console.log("server run"));
+// server.listen(3000, console.log("server run"));
+
+router.get("/", (req, res) => {
+  res.send("App is running..");
+});
+
+app.use("/.netlify/functions/app", router);
+module.exports.handler = serverless(app);
 
 module.exports = app;
