@@ -6,20 +6,20 @@ const User = require("../models/user");
 const user = require("../models/user");
 const addTournament = async (req, res, next) => {
   try {
-    const decodedImage = Buffer.from(req.body.image, "base64");
-
-    const uploadDirectory = path.join(
-      __dirname,
-      "../public/images/tournaments"
-    );
-    if (!fs.existsSync(uploadDirectory)) {
-      fs.mkdirSync(uploadDirectory);
-    }
-
-    const filePath = path.join(uploadDirectory, req.body.filename);
-
-    // Save the decoded image to the file
-    fs.writeFileSync(filePath, decodedImage);
+    // const decodedImage = Buffer.from(req.body.image, "base64");
+    //
+    // const uploadDirectory = path.join(
+    //   __dirname,
+    //   "../public/images/tournaments"
+    // );
+    // if (!fs.existsSync(uploadDirectory)) {
+    //   fs.mkdirSync(uploadDirectory);
+    // }
+    //
+    // const filePath = path.join(uploadDirectory, req.body.filename);
+    //
+    // // Save the decoded image to the file
+    // fs.writeFileSync(filePath, decodedImage);
     const newTournament = new Tournament({
       name: req.body.name,
       description: req.body.description,

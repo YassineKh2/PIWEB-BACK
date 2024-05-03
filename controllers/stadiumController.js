@@ -38,7 +38,7 @@ const updateStadiumStatus = async () => {
         for (const tournamentId of stadium.tournaments) {
           // Find the tournament document using its ID
           const tournament = await Tournament.findById(tournamentId);
-          
+
           // If the tournament is not found or it's already ended, continue to the next tournament
           if (!tournament || today > new Date(tournament.endDate)) {
             continue;
@@ -68,10 +68,10 @@ const updateStadiumStatus = async () => {
 
 
 // Schedule the status update task to run every day at midnight
-cron.schedule('* * * * *', async () => {
-  console.log('Running status update task based on tournament dates...');
-  await updateStadiumStatus();
-});
+// cron.schedule('* * * * *', async () => {
+//   console.log('Running status update task based on tournament dates...');
+//   await updateStadiumStatus();
+// });
 
 
 const getAllStadiums = async (req, res, next) => {
@@ -83,7 +83,7 @@ const getAllStadiums = async (req, res, next) => {
       }
     }
 
-   
+
     res.status(200).json({ Stadiums });
   } catch (error) {
     res.status(500).json({ message: error.message });
